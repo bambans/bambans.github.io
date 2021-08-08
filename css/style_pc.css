@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400&display=swap');
+
+body {
+    background-color: #121212;
+    color: white;
+    text-align: center;
+    font-family: 'Roboto Mono', monospace;   
+}
+.container{
+    margin: 10rem auto 0vh auto;
+}
+.img-me{
+    background: url("../img/otavio_pixel.png") no-repeat center center;
+    background-size: contain;
+    clip-path: circle(12rem at center);
+    margin: auto;
+    height: 25rem;
+}
+.content{
+    margin: auto;
+}
+h1{
+    white-space: nowrap;
+}
