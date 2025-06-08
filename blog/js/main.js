@@ -12,7 +12,7 @@ const contentArea = document.getElementById("content");
 
 // Function to fetch posts list
 async function fetchPosts() {
-  postList.innerHTML = '<li class="list-group-item">Loading posts...</li>';
+  postList.innerHTML = '<li class="px-6 py-4 text-gray-300">Loading posts...</li>';
 
   try {
     const response = await fetch(
@@ -34,7 +34,7 @@ async function fetchPosts() {
 
     if (markdownFiles.length === 0) {
       postList.innerHTML =
-        '<li class="list-group-item">No markdown files found</li>';
+        '<li class="px-6 py-4 text-gray-300">No markdown files found</li>';
       return;
     }
 
@@ -46,7 +46,7 @@ async function fetchPosts() {
 
     markdownFiles.forEach((file) => {
       const listItem = document.createElement("li");
-      listItem.className = "list-group-item list-group-item-action";
+      listItem.className = "px-6 py-4 text-gray-300 hover:bg-gray-700 cursor-pointer transition-colors duration-200 border-b border-gray-600 last:border-b-0";
 
       // Create display name without the extension
       const displayName = file.name.replace(/\.(md|markdown)$/, "");
@@ -58,11 +58,13 @@ async function fetchPosts() {
 
         // Remove active class from all items and add to clicked
         document
-          .querySelectorAll("#post-list .list-group-item")
+          .querySelectorAll("#post-list li")
           .forEach((item) => {
-            item.classList.remove("active");
+            item.classList.remove("bg-terminal-purple", "text-white");
+            item.classList.add("text-gray-300");
           });
-        listItem.classList.add("active");
+        listItem.classList.remove("text-gray-300");
+        listItem.classList.add("bg-terminal-purple", "text-white");
       });
 
       postList.appendChild(listItem);
@@ -73,17 +75,19 @@ async function fetchPosts() {
       const firstFile = markdownFiles[0];
       const displayName = firstFile.name.replace(/\.(md|markdown)$/, "");
       loadPost(firstFile.download_url, displayName);
-      postList.firstChild.classList.add("active");
+      const firstItem = postList.firstChild;
+      firstItem.classList.remove("text-gray-300");
+      firstItem.classList.add("bg-terminal-purple", "text-white");
     }
   } catch (error) {
     console.error("Error fetching posts:", error);
-    postList.innerHTML = `<li class="list-group-item text-danger">Error loading posts: ${error.message}</li>`;
+    postList.innerHTML = `<li class="px-6 py-4 text-red-400">Error loading posts: ${error.message}</li>`;
   }
 }
 
 // Function to load a specific post
 async function loadPost(url, title) {
-  contentArea.innerHTML = '<div class="loading">Loading post...</div>';
+  contentArea.innerHTML = '<div class="loading text-center py-16 text-gray-400">Loading post...</div>';
   postTitle.textContent = title;
   postDate.textContent = "";
 
@@ -108,16 +112,47 @@ async function loadPost(url, title) {
     const cleanHtml = DOMPurify.sanitize(rawHtml);
     contentArea.innerHTML = cleanHtml;
 
-    // Add target="_blank" to external links
+    // Add target="_blank" to external links and style them
     document.querySelectorAll("#content a").forEach((link) => {
       if (link.hostname !== window.location.hostname) {
         link.setAttribute("target", "_blank");
         link.setAttribute("rel", "noopener noreferrer");
       }
+      // Add Tailwind classes to links
+      link.classList.add("text-terminal-orange", "hover:text-terminal-orange-hover", "transition-colors", "duration-200");
     });
+
+    // Style code blocks
+    document.querySelectorAll("#content pre").forEach((pre) => {
+      pre.classList.add("bg-gray-900", "border", "border-gray-600", "rounded-lg", "p-4", "overflow-x-auto");
+    });
+
+    // Style inline code
+    document.querySelectorAll("#content code:not(pre code)").forEach((code) => {
+      code.classList.add("bg-gray-700", "text-terminal-cyan", "px-2", "py-1", "rounded", "text-sm");
+    });
+
+    // Style blockquotes
+    document.querySelectorAll("#content blockquote").forEach((blockquote) => {
+      blockquote.classList.add("border-l-4", "border-terminal-purple", "pl-4", "italic", "text-gray-300");
+    });
+
+    // Style tables
+    document.querySelectorAll("#content table").forEach((table) => {
+      table.classList.add("w-full", "border-collapse", "border", "border-gray-600");
+    });
+
+    document.querySelectorAll("#content th").forEach((th) => {
+      th.classList.add("border", "border-gray-600", "bg-gray-700", "px-4", "py-2", "text-left");
+    });
+
+    document.querySelectorAll("#content td").forEach((td) => {
+      td.classList.add("border", "border-gray-600", "px-4", "py-2");
+    });
+
   } catch (error) {
     console.error("Error loading post:", error);
-    contentArea.innerHTML = `<div class="alert alert-danger">Error loading post: ${error.message}</div>`;
+    contentArea.innerHTML = `<div class="bg-red-900 border border-red-600 text-red-200 px-4 py-3 rounded">Error loading post: ${error.message}</div>`;
   }
 }
 

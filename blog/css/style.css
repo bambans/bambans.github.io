@@ -1,18 +1,163 @@
+/* Custom styles to complement Tailwind CSS */
+
+/* Markdown body styling for better integration with dark theme */
 .markdown-body {
     box-sizing: border-box;
     min-width: 200px;
-    max-width: 980px;
-    margin: 0 auto;
-    padding: 45px;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    background-color: #121212 !important;
+    color: #ffffff !important;
+    font-family: 'Roboto Mono', monospace !important;
 }
 
+/* Override GitHub markdown styles for dark theme */
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+    color: #40e0d0 !important;
+    border-bottom-color: #374151 !important;
+}
+
+.markdown-body p {
+    color: #ffffff !important;
+}
+
+.markdown-body ul,
+.markdown-body ol {
+    color: #ffffff !important;
+}
+
+.markdown-body li {
+    color: #ffffff !important;
+}
+
+.markdown-body strong,
+.markdown-body b {
+    color: #8a2be2 !important;
+}
+
+.markdown-body em,
+.markdown-body i {
+    color: #d1d5db !important;
+}
+
+/* Code styling */
+.markdown-body pre {
+    background-color: #1f2937 !important;
+    border: 1px solid #4b5563 !important;
+}
+
+.markdown-body code {
+    background-color: #374151 !important;
+    color: #40e0d0 !important;
+}
+
+.markdown-body pre code {
+    background-color: transparent !important;
+    color: #ffffff !important;
+}
+
+/* Table styling */
+.markdown-body table {
+    background-color: transparent !important;
+}
+
+.markdown-body table tr {
+    background-color: transparent !important;
+    border-top-color: #4b5563 !important;
+}
+
+.markdown-body table tr:nth-child(2n) {
+    background-color: #1f2937 !important;
+}
+
+.markdown-body table th,
+.markdown-body table td {
+    border-color: #4b5563 !important;
+    color: #ffffff !important;
+}
+
+.markdown-body table th {
+    background-color: #374151 !important;
+}
+
+/* Blockquote styling */
+.markdown-body blockquote {
+    color: #d1d5db !important;
+    border-left-color: #8a2be2 !important;
+    background-color: #1f2937 !important;
+}
+
+/* HR styling */
+.markdown-body hr {
+    background-color: #4b5563 !important;
+    border: none !important;
+    height: 1px !important;
+}
+
+/* Loading animation */
+.loading {
+    text-align: center;
+    padding: 2rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Responsive adjustments */
 @media (max-width: 767px) {
     .markdown-body {
         padding: 15px;
     }
+    
+    /* Make tables scrollable on mobile */
+    .markdown-body table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
 }
 
-.loading {
-    text-align: center;
-    padding: 2rem;
+/* Custom scrollbar for webkit browsers */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1f2937;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+}
+
+/* Smooth transitions for interactive elements */
+.markdown-body a {
+    transition: color 0.2s ease-in-out;
+}
+
+/* Focus styles for accessibility */
+.markdown-body a:focus,
+button:focus,
+[tabindex]:focus {
+    outline: 2px solid #8a2be2;
+    outline-offset: 2px;
 }

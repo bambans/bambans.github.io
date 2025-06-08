@@ -1,47 +1,186 @@
+/* Custom CSS for bambans.github.io.tail - Tailwind CSS Compatible */
+
 @import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400&display=swap");
 
+/* Base styles that work with Tailwind */
 body {
-    background-color: #121212;
-    color: white;
-    text-align: justify;
     font-family: "Roboto Mono", monospace;
 }
-.container {
-    margin: 5rem auto 0vh auto;
-    width: 100vw;
-}
-img {
-    height: 25rem;
-    border-radius: 50%;
-}
-.content {
-    margin: auto;
-}
-.p {
-    color: blueviolet;
-}
-.b {
-    color: turquoise;
-}
-h2 {
-    text-align: center;
-}
-a {
-    color: tomato;
-}
-a:hover {
-    color: rgb(127, 19, 0);
+
+/* Custom animations and transitions */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-@media screen and (max-width: 900px) {
-    img {
-        margin: 0px auto 0px auto;
-        height: 20rem;
+.fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+/* Staggered animation delays for sections */
+.fade-in:nth-child(1) { animation-delay: 0.1s; }
+.fade-in:nth-child(2) { animation-delay: 0.2s; }
+.fade-in:nth-child(3) { animation-delay: 0.3s; }
+.fade-in:nth-child(4) { animation-delay: 0.4s; }
+.fade-in:nth-child(5) { animation-delay: 0.5s; }
+
+/* Custom hover effects for profile image */
+.profile-image {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.profile-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 20px 40px rgba(138, 43, 226, 0.3);
+}
+
+/* Terminal-like typing effect for headers */
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent; }
+    50% { border-color: #8a2be2; }
+}
+
+.typing-effect {
+    overflow: hidden;
+    border-right: 2px solid #8a2be2;
+    white-space: nowrap;
+    animation: typing 2s steps(20, end), blink-caret 1s step-end infinite;
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #121212;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #8a2be2;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a855f7;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 768px) {
+    .profile-image {
+        width: 16rem !important;
+        height: 16rem !important;
     }
-    .container {
-        margin: auto;
+    
+    .typing-effect {
+        animation: none;
+        border-right: none;
+        white-space: normal;
+        overflow: visible;
     }
-    h2 {
-        text-align: justify;
+}
+
+@media screen and (max-width: 640px) {
+    .profile-image {
+        width: 14rem !important;
+        height: 14rem !important;
+    }
+}
+
+/* Focus styles for accessibility */
+a:focus,
+button:focus,
+iframe:focus {
+    outline: 2px solid #8a2be2;
+    outline-offset: 2px;
+}
+
+/* Spotify iframe styling enhancement */
+iframe[src*="spotify"] {
+    transition: transform 0.2s ease-in-out;
+}
+
+iframe[src*="spotify"]:hover {
+    transform: scale(1.02);
+}
+
+/* Link hover effects enhancement */
+.link-hover-effect {
+    position: relative;
+    display: inline-block;
+}
+
+.link-hover-effect::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: #ff6347;
+    transition: width 0.3s ease-in-out;
+}
+
+.link-hover-effect:hover::after {
+    width: 100%;
+}
+
+/* Terminal prompt styling */
+.terminal-prompt {
+    font-weight: bold;
+}
+
+.terminal-command {
+    font-weight: bold;
+}
+
+/* Custom gradient backgrounds for sections */
+.section-gradient {
+    background: linear-gradient(135deg, rgba(138, 43, 226, 0.1) 0%, rgba(64, 224, 208, 0.1) 100%);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(138, 43, 226, 0.2);
+}
+
+/* Loading animation for any dynamic content */
+.loading-dots::after {
+    content: '';
+    animation: dots 2s infinite;
+}
+
+@keyframes dots {
+    0%, 20% { content: ''; }
+    40% { content: '.'; }
+    60% { content: '..'; }
+    80%, 100% { content: '...'; }
+}
+
+/* Print styles */
+@media print {
+    body {
+        background-color: white !important;
+        color: black !important;
+    }
+    
+    .profile-image {
+        transform: none !important;
+        box-shadow: none !important;
+    }
+    
+    a {
+        color: blue !important;
+        text-decoration: underline;
     }
 }
