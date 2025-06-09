@@ -1,420 +1,464 @@
-// Service Worker for Bambans Blog
-// Provides offline functionality and caching for enhanced user experience
+// Service Worker for Performance and Offline Capabilities
+'use strict';
 
-const CACHE_NAME = 'bambans-blog-v1.2.0';
-const STATIC_CACHE = 'bambans-static-v1.2.0';
-const DYNAMIC_CACHE = 'bambans-dynamic-v1.2.0';
+const CACHE_NAME = 'bambans-blog-v2.0.0';
+const STATIC_CACHE = 'bambans-static-v2.0.0';
+const DYNAMIC_CACHE = 'bambans-dynamic-v2.0.0';
 
-// Files to cache on install
-const STATIC_FILES = [
-  '/',
-  '/blog/',
-  '/blog/index.html',
-  '/blog/css/style.css',
-  '/css/style.css',
-  '/js/main.js',
-  '/js/blog-utils.js',
-  '/js/tailwind_config.js',
-  // Fallback offline page
-  '/blog/offline.html'
+// Configuration
+const SW_CONFIG = {
+    maxCacheSize: 50, // Maximum cached entries
+    cacheExpiration: 24 * 60 * 60 * 1000, // 24 hours
+    networkTimeout: 5000, // 5 seconds
+    enableLogs: false // Set to true for debugging
+};
+
+// Static assets to cache immediately
+const STATIC_ASSETS = [
+    '/',
+    '/index.html',
+    '/blog/',
+    '/blog/index.html',
+    '/css/normalize.css',
+    '/css/main.css',
+    '/blog/css/blog.css',
+    '/js/main.js',
+    '/blog/js/markdown-renderer.js',
+    '/blog/js/mermaid-handler.js',
+    '/blog/js/blog-app.js',
+    '/img/otavio.ico',
+    '/img/otavio-pixel-sem-bg.png'
 ];
 
-// CDN resources to cache
-const CDN_RESOURCES = [
-  'https://cdn.tailwindcss.com/tailwind.min.js',
-  'https://cdn.jsdelivr.net/npm/github-markdown-css@5.2.0/github-markdown.min.css',
-  'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css',
-  'https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css',
-  'https://cdn.jsdelivr.net/npm/marked/marked.min.js',
-  'https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js',
-  'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js',
-  'https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js',
-  'https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js',
-  'https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js',
-  'https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js'
+// Critical CDN resources to cache (reduced list)
+const CDN_ASSETS = [
+    'https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css',
+    'https://cdn.jsdelivr.net/npm/marked/marked.min.js',
+    'https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js'
 ];
 
-// GitHub API URLs to cache
-const GITHUB_API_PATTERNS = [
-  /^https:\/\/api\.github\.com\/repos\/bambans\/bambans\.github\.io\/contents\/blog\/posts/,
-  /^https:\/\/raw\.githubusercontent\.com\/bambans\/bambans\.github\.io\/main\/blog\/posts\//
-];
-
-// Install event - cache static files
-self.addEventListener('install', event => {
-  console.log('Service Worker: Installing...');
-  
-  event.waitUntil(
-    Promise.all([
-      // Cache static files
-      caches.open(STATIC_CACHE).then(cache => {
-        console.log('Service Worker: Caching static files');
-        return cache.addAll(STATIC_FILES.map(url => new Request(url, {
-          cache: 'reload'
-        })));
-      }),
-      
-      // Cache CDN resources
-      caches.open(DYNAMIC_CACHE).then(cache => {
-        console.log('Service Worker: Caching CDN resources');
-        return Promise.allSettled(
-          CDN_RESOURCES.map(url => 
-            cache.add(new Request(url, {
-              mode: 'cors',
-              cache: 'default'
-            })).catch(err => {
-              console.warn(`Failed to cache ${url}:`, err);
-              return null;
+// Install event - cache static assets
+self.addEventListener('install', (event) => {
+    log('[SW] Installing service worker');
+    
+    event.waitUntil(
+        cacheStaticAssets()
+            .then(() => {
+                log('[SW] Static assets cached successfully');
+                return self.skipWaiting();
             })
-          )
-        );
-      })
-    ]).then(() => {
-      console.log('Service Worker: Installation complete');
-      return self.skipWaiting();
-    }).catch(err => {
-      console.error('Service Worker: Installation failed', err);
-    })
-  );
+            .catch((error) => {
+                console.error('[SW] Failed to cache assets:', error);
+            })
+    );
 });
 
 // Activate event - clean old caches
-self.addEventListener('activate', event => {
-  console.log('Service Worker: Activating...');
-  
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          // Delete old caches
-          if (cacheName !== STATIC_CACHE && 
-              cacheName !== DYNAMIC_CACHE && 
-              cacheName !== CACHE_NAME) {
-            console.log('Service Worker: Deleting old cache', cacheName);
-            return caches.delete(cacheName);
-          }
+self.addEventListener('activate', (event) => {
+    log('[SW] Activating service worker');
+    
+    event.waitUntil(
+        Promise.all([
+            cleanOldCaches(),
+            cleanExpiredEntries()
+        ]).then(() => {
+            log('[SW] Service worker activated');
+            return self.clients.claim();
         })
-      );
-    }).then(() => {
-      console.log('Service Worker: Activation complete');
-      return self.clients.claim();
-    })
-  );
+    );
 });
 
-// Fetch event - serve from cache or network
-self.addEventListener('fetch', event => {
-  const { request } = event;
-  const url = new URL(request.url);
-  
-  // Skip non-GET requests
-  if (request.method !== 'GET') {
-    return;
-  }
-  
-  // Skip chrome-extension and other non-http(s) requests
-  if (!url.protocol.startsWith('http')) {
-    return;
-  }
-  
-  event.respondWith(handleFetch(request));
-});
-
-async function handleFetch(request) {
-  const url = new URL(request.url);
-  
-  try {
+// Fetch event - serve from cache with network fallback
+self.addEventListener('fetch', (event) => {
+    const request = event.request;
+    const url = new URL(request.url);
+    
+    // Skip non-GET requests
+    if (request.method !== 'GET') {
+        return;
+    }
+    
     // Handle different types of requests
-    if (isStaticFile(url)) {
-      return handleStaticFile(request);
-    } else if (isCDNResource(url)) {
-      return handleCDNResource(request);
-    } else if (isGitHubAPI(url)) {
-      return handleGitHubAPI(request);
+    if (isStaticAsset(request)) {
+        event.respondWith(cacheFirst(request));
+    } else if (isAPIRequest(request)) {
+        event.respondWith(networkFirst(request));
+    } else if (isCDNAsset(request)) {
+        event.respondWith(cacheFirst(request));
     } else {
-      return handleDynamicRequest(request);
+        event.respondWith(staleWhileRevalidate(request));
     }
-  } catch (error) {
-    console.error('Service Worker: Fetch error', error);
-    return handleOfflineFallback(request);
-  }
-}
-
-// Handle static files - Cache First strategy
-async function handleStaticFile(request) {
-  const cache = await caches.open(STATIC_CACHE);
-  const cachedResponse = await cache.match(request);
-  
-  if (cachedResponse) {
-    return cachedResponse;
-  }
-  
-  try {
-    const networkResponse = await fetch(request);
-    if (networkResponse.ok) {
-      cache.put(request, networkResponse.clone());
-    }
-    return networkResponse;
-  } catch (error) {
-    return handleOfflineFallback(request);
-  }
-}
-
-// Handle CDN resources - Cache First with fallback
-async function handleCDNResource(request) {
-  const cache = await caches.open(DYNAMIC_CACHE);
-  const cachedResponse = await cache.match(request);
-  
-  if (cachedResponse) {
-    return cachedResponse;
-  }
-  
-  try {
-    const networkResponse = await fetch(request, {
-      mode: 'cors',
-      cache: 'default'
-    });
-    
-    if (networkResponse.ok) {
-      cache.put(request, networkResponse.clone());
-    }
-    return networkResponse;
-  } catch (error) {
-    console.warn('CDN resource unavailable:', request.url);
-    return new Response('/* CDN resource unavailable */', {
-      status: 200,
-      headers: { 'Content-Type': getContentType(request.url) }
-    });
-  }
-}
-
-// Handle GitHub API - Network First with cache fallback
-async function handleGitHubAPI(request) {
-  const cache = await caches.open(DYNAMIC_CACHE);
-  
-  try {
-    const networkResponse = await fetch(request);
-    
-    if (networkResponse.ok) {
-      // Cache successful responses
-      cache.put(request, networkResponse.clone());
-      return networkResponse;
-    } else if (networkResponse.status === 403) {
-      // Rate limited - try cache
-      const cachedResponse = await cache.match(request);
-      if (cachedResponse) {
-        console.log('Service Worker: Using cached response due to rate limit');
-        return cachedResponse;
-      }
-    }
-    
-    return networkResponse;
-  } catch (error) {
-    // Network error - try cache
-    const cachedResponse = await cache.match(request);
-    if (cachedResponse) {
-      console.log('Service Worker: Using cached GitHub API response');
-      return cachedResponse;
-    }
-    
-    // No cache available
-    return new Response(JSON.stringify({
-      error: 'Network unavailable',
-      message: 'Unable to fetch data. Please check your connection.'
-    }), {
-      status: 503,
-      headers: { 'Content-Type': 'application/json' }
-    });
-  }
-}
-
-// Handle other dynamic requests
-async function handleDynamicRequest(request) {
-  const cache = await caches.open(DYNAMIC_CACHE);
-  
-  try {
-    const networkResponse = await fetch(request);
-    
-    if (networkResponse.ok) {
-      // Cache successful responses for a limited time
-      cache.put(request, networkResponse.clone());
-    }
-    
-    return networkResponse;
-  } catch (error) {
-    const cachedResponse = await cache.match(request);
-    if (cachedResponse) {
-      return cachedResponse;
-    }
-    
-    return handleOfflineFallback(request);
-  }
-}
-
-// Handle offline fallback
-async function handleOfflineFallback(request) {
-  const url = new URL(request.url);
-  
-  // Return offline page for navigation requests
-  if (request.mode === 'navigate') {
-    const cache = await caches.open(STATIC_CACHE);
-    const offlinePage = await cache.match('/blog/offline.html');
-    if (offlinePage) {
-      return offlinePage;
-    }
-  }
-  
-  // Return a basic offline response
-  return new Response('Offline - Content not available', {
-    status: 503,
-    statusText: 'Service Unavailable',
-    headers: { 'Content-Type': 'text/plain' }
-  });
-}
-
-// Utility functions
-function isStaticFile(url) {
-  return url.origin === self.location.origin && (
-    url.pathname.endsWith('.html') ||
-    url.pathname.endsWith('.css') ||
-    url.pathname.endsWith('.js') ||
-    url.pathname === '/' ||
-    url.pathname === '/blog/' ||
-    url.pathname.startsWith('/blog/') && !url.pathname.includes('posts')
-  );
-}
-
-function isCDNResource(url) {
-  return CDN_RESOURCES.some(cdn => url.href.startsWith(cdn.split('?')[0])) ||
-         url.hostname.includes('cdn.') ||
-         url.hostname.includes('jsdelivr.net') ||
-         url.hostname.includes('tailwindcss.com');
-}
-
-function isGitHubAPI(url) {
-  return GITHUB_API_PATTERNS.some(pattern => pattern.test(url.href));
-}
-
-function getContentType(url) {
-  if (url.endsWith('.css')) return 'text/css';
-  if (url.endsWith('.js')) return 'application/javascript';
-  if (url.endsWith('.json')) return 'application/json';
-  return 'text/plain';
-}
-
-// Message handling for cache management
-self.addEventListener('message', event => {
-  const { action, data } = event.data;
-  
-  switch (action) {
-    case 'SKIP_WAITING':
-      self.skipWaiting();
-      break;
-      
-    case 'CLEAR_CACHE':
-      clearAllCaches().then(() => {
-        event.ports[0].postMessage({ success: true });
-      }).catch(error => {
-        event.ports[0].postMessage({ success: false, error: error.message });
-      });
-      break;
-      
-    case 'CACHE_POST':
-      if (data && data.url) {
-        cachePost(data.url).then(() => {
-          event.ports[0].postMessage({ success: true });
-        }).catch(error => {
-          event.ports[0].postMessage({ success: false, error: error.message });
-        });
-      }
-      break;
-      
-    case 'GET_CACHE_INFO':
-      getCacheInfo().then(info => {
-        event.ports[0].postMessage({ success: true, data: info });
-      }).catch(error => {
-        event.ports[0].postMessage({ success: false, error: error.message });
-      });
-      break;
-  }
 });
 
-// Cache management functions
-async function clearAllCaches() {
-  const cacheNames = await caches.keys();
-  await Promise.all(cacheNames.map(name => caches.delete(name)));
-  console.log('Service Worker: All caches cleared');
-}
-
-async function cachePost(url) {
-  const cache = await caches.open(DYNAMIC_CACHE);
-  await cache.add(url);
-  console.log('Service Worker: Post cached', url);
-}
-
-async function getCacheInfo() {
-  const cacheNames = await caches.keys();
-  const info = {};
-  
-  for (const name of cacheNames) {
-    const cache = await caches.open(name);
-    const keys = await cache.keys();
-    info[name] = {
-      count: keys.length,
-      urls: keys.slice(0, 10).map(req => req.url) // First 10 URLs
-    };
-  }
-  
-  return info;
-}
-
-// Periodic cache cleanup
-self.addEventListener('periodicsync', event => {
-  if (event.tag === 'cache-cleanup') {
-    event.waitUntil(cleanupOldCache());
-  }
-});
-
-async function cleanupOldCache() {
-  const cache = await caches.open(DYNAMIC_CACHE);
-  const requests = await cache.keys();
-  const now = Date.now();
-  const maxAge = 7 * 24 * 60 * 60 * 1000; // 7 days
-  
-  for (const request of requests) {
-    const response = await cache.match(request);
-    if (response) {
-      const dateHeader = response.headers.get('date');
-      if (dateHeader) {
-        const responseDate = new Date(dateHeader).getTime();
-        if (now - responseDate > maxAge) {
-          await cache.delete(request);
-          console.log('Service Worker: Cleaned up old cache entry', request.url);
+// Message event - handle cache updates
+self.addEventListener('message', (event) => {
+    if (event.data && event.data.type) {
+        switch (event.data.type) {
+            case 'SKIP_WAITING':
+                self.skipWaiting();
+                break;
+            case 'CACHE_URLS':
+                if (event.data.payload) {
+                    cacheUrls(event.data.payload);
+                }
+                break;
+            case 'CLEAR_CACHE':
+                clearAllCaches();
+                break;
         }
-      }
     }
-  }
+});
+
+/**
+ * Cache static assets
+ */
+async function cacheStaticAssets() {
+    try {
+        const cache = await caches.open(STATIC_CACHE);
+        
+        // Cache static assets with retry logic
+        const cachePromises = STATIC_ASSETS.map(async (url) => {
+            try {
+                await cache.add(url);
+                return { url, success: true };
+            } catch (error) {
+                log(`Failed to cache: ${url}`, error);
+                return { url, success: false };
+            }
+        });
+        
+        // Cache critical CDN assets
+        const cdnPromises = CDN_ASSETS.map(async (url) => {
+            try {
+                const response = await fetchWithTimeout(url, {
+                    mode: 'cors',
+                    credentials: 'omit'
+                });
+                
+                if (response.ok) {
+                    await cache.put(url, response);
+                    return { url, success: true };
+                }
+            } catch (error) {
+                log(`Failed to cache CDN: ${url}`, error);
+            }
+            return { url, success: false };
+        });
+        
+        const results = await Promise.all([...cachePromises, ...cdnPromises]);
+        const failed = results.filter(r => !r.success);
+        
+        if (failed.length > 0) {
+            log(`Failed to cache ${failed.length} assets`);
+        }
+        
+    } catch (error) {
+        console.error('[SW] Cache operation failed:', error);
+    }
 }
 
-// Background sync for when connection is restored
-self.addEventListener('sync', event => {
-  if (event.tag === 'background-sync') {
-    event.waitUntil(doBackgroundSync());
-  }
+/**
+ * Clean old caches
+ */
+async function cleanOldCaches() {
+    const cacheNames = await caches.keys();
+    const validCaches = [STATIC_CACHE, DYNAMIC_CACHE];
+    
+    const deletePromises = cacheNames
+        .filter(cacheName => !validCaches.includes(cacheName))
+        .map(cacheName => {
+            console.log(`[SW] Deleting old cache: ${cacheName}`);
+            return caches.delete(cacheName);
+        });
+    
+    return Promise.all(deletePromises);
+}
+
+/**
+ * Cache-first strategy
+ */
+async function cacheFirst(request) {
+    try {
+        const cachedResponse = await caches.match(request);
+        
+        if (cachedResponse && !isExpired(cachedResponse)) {
+            return cachedResponse;
+        }
+        
+        const networkResponse = await fetchWithTimeout(request);
+        
+        if (networkResponse.ok) {
+            const cache = await caches.open(STATIC_CACHE);
+            await addToCache(cache, request, networkResponse.clone());
+        }
+        
+        return networkResponse;
+        
+    } catch (error) {
+        log('Cache-first strategy failed:', error);
+        const cachedResponse = await caches.match(request);
+        return cachedResponse || createErrorResponse('Resource not available offline');
+    }
+}
+
+/**
+ * Network-first strategy for API requests
+ */
+async function networkFirst(request) {
+    try {
+        const networkResponse = await fetchWithTimeout(request);
+        
+        if (networkResponse.ok) {
+            const cache = await caches.open(DYNAMIC_CACHE);
+            await addToCache(cache, request, networkResponse.clone());
+        }
+        
+        return networkResponse;
+        
+    } catch (error) {
+        log('Network failed, trying cache:', error);
+        
+        const cachedResponse = await caches.match(request);
+        if (cachedResponse) {
+            return cachedResponse;
+        }
+        
+        return createErrorResponse('Network error and no cached version available');
+    }
+}
+
+/**
+ * Stale-while-revalidate strategy
+ */
+async function staleWhileRevalidate(request) {
+    const cache = await caches.open(DYNAMIC_CACHE);
+    const cachedResponse = await cache.match(request);
+    
+    // Background fetch (don't await)
+    fetchWithTimeout(request)
+        .then(networkResponse => {
+            if (networkResponse.ok) {
+                addToCache(cache, request, networkResponse.clone());
+            }
+        })
+        .catch(error => log('Background fetch failed:', error));
+    
+    return cachedResponse || 
+           fetchWithTimeout(request).catch(() => createErrorResponse('Resource not available'));
+}
+
+/**
+ * Check if request is for static asset
+ */
+function isStaticAsset(request) {
+    const url = new URL(request.url);
+    
+    return STATIC_ASSETS.some(asset => {
+        const assetUrl = new URL(asset, self.location.origin);
+        return url.pathname === assetUrl.pathname;
+    });
+}
+
+/**
+ * Check if request is API request
+ */
+function isAPIRequest(request) {
+    const url = new URL(request.url);
+    return url.hostname === 'api.github.com';
+}
+
+/**
+ * Check if request is CDN asset
+ */
+function isCDNAsset(request) {
+    const url = new URL(request.url);
+    return url.hostname === 'cdn.jsdelivr.net' || 
+           url.hostname === 'unpkg.com' ||
+           CDN_ASSETS.includes(request.url);
+}
+
+/**
+ * Cache specific URLs
+ */
+async function cacheUrls(urls) {
+    const cache = await caches.open(DYNAMIC_CACHE);
+    
+    for (const url of urls) {
+        try {
+            await cache.add(url);
+        } catch (error) {
+            console.warn(`[SW] Failed to cache URL: ${url}`, error);
+        }
+    }
+}
+
+/**
+ * Clear all caches
+ */
+async function clearAllCaches() {
+    const cacheNames = await caches.keys();
+    const deletePromises = cacheNames.map(cacheName => caches.delete(cacheName));
+    await Promise.all(deletePromises);
+    console.log('[SW] All caches cleared');
+}
+
+/**
+ * Create error response
+ */
+function createErrorResponse(message) {
+    return new Response(
+        JSON.stringify({
+            error: message,
+            timestamp: new Date().toISOString()
+        }),
+        {
+            status: 503,
+            statusText: 'Service Unavailable',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+    );
+}
+
+/**
+ * Background sync for failed requests (if supported)
+ */
+self.addEventListener('sync', (event) => {
+    if (event.tag === 'background-sync') {
+        event.waitUntil(doBackgroundSync());
+    }
 });
 
 async function doBackgroundSync() {
-  try {
-    // Attempt to refresh GitHub API data when connection is restored
-    const postsResponse = await fetch('https://api.github.com/repos/bambans/bambans.github.io/contents/blog/posts');
-    if (postsResponse.ok) {
-      const cache = await caches.open(DYNAMIC_CACHE);
-      cache.put('https://api.github.com/repos/bambans/bambans.github.io/contents/blog/posts', postsResponse.clone());
-      console.log('Service Worker: Background sync completed');
-    }
-  } catch (error) {
-    console.log('Service Worker: Background sync failed', error);
-  }
+    // Implement background sync logic here
+    console.log('[SW] Background sync triggered');
 }
 
-console.log('Service Worker: Script loaded');
+/**
+ * Push notification handling (if needed)
+ */
+self.addEventListener('push', (event) => {
+    if (event.data) {
+        const data = event.data.json();
+        const options = {
+            body: data.body,
+            icon: '/img/otavio.ico',
+            badge: '/img/otavio-pixel-sem-bg.png',
+            data: data.url
+        };
+        
+        event.waitUntil(
+            self.registration.showNotification(data.title, options)
+        );
+    }
+});
+
+/**
+ * Notification click handling
+ */
+self.addEventListener('notificationclick', (event) => {
+    event.notification.close();
+    
+    if (event.notification.data) {
+        event.waitUntil(
+            clients.openWindow(event.notification.data)
+        );
+    }
+});
+
+/**
+ * Utility functions
+ */
+
+// Logging utility
+function log(message, ...args) {
+    if (SW_CONFIG.enableLogs) {
+        console.log(`[SW] ${message}`, ...args);
+    }
+}
+
+// Fetch with timeout
+async function fetchWithTimeout(request, options = {}) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), SW_CONFIG.networkTimeout);
+    
+    try {
+        const response = await fetch(request, {
+            ...options,
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        return response;
+    } catch (error) {
+        clearTimeout(timeoutId);
+        throw error;
+    }
+}
+
+// Check if response is expired
+function isExpired(response) {
+    if (!response.headers.has('sw-cached-date')) return false;
+    
+    const cachedDate = new Date(response.headers.get('sw-cached-date'));
+    const now = new Date();
+    return (now.getTime() - cachedDate.getTime()) > SW_CONFIG.cacheExpiration;
+}
+
+// Add to cache with metadata
+async function addToCache(cache, request, response) {
+    try {
+        // Clone response and add timestamp
+        const responseClone = response.clone();
+        const headers = new Headers(responseClone.headers);
+        headers.set('sw-cached-date', new Date().toISOString());
+        
+        const responseWithDate = new Response(responseClone.body, {
+            status: responseClone.status,
+            statusText: responseClone.statusText,
+            headers: headers
+        });
+        
+        await cache.put(request, responseWithDate);
+        
+        // Clean cache if it's getting too large
+        await cleanCacheSize(cache);
+        
+    } catch (error) {
+        log('Failed to add to cache:', error);
+    }
+}
+
+// Clean cache size
+async function cleanCacheSize(cache) {
+    const keys = await cache.keys();
+    if (keys.length > SW_CONFIG.maxCacheSize) {
+        const keysToDelete = keys.slice(0, keys.length - SW_CONFIG.maxCacheSize);
+        await Promise.all(keysToDelete.map(key => cache.delete(key)));
+        log(`Cleaned ${keysToDelete.length} cache entries`);
+    }
+}
+
+// Clean expired entries
+async function cleanExpiredEntries() {
+    try {
+        const cacheNames = [STATIC_CACHE, DYNAMIC_CACHE];
+        
+        for (const cacheName of cacheNames) {
+            const cache = await caches.open(cacheName);
+            const requests = await cache.keys();
+            
+            for (const request of requests) {
+                const response = await cache.match(request);
+                if (response && isExpired(response)) {
+                    await cache.delete(request);
+                    log(`Deleted expired entry: ${request.url}`);
+                }
+            }
+        }
+    } catch (error) {
+        log('Error cleaning expired entries:', error);
+    }
+}
+
+log('Service worker script loaded');

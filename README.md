@@ -1,96 +1,90 @@
-# bambans.github.io.tail
+# Bambans Personal Website & Blog
 
-A modern personal website and blog built with **Tailwind CSS**, featuring a terminal-inspired dark theme and dynamic markdown blog functionality.
+A modern, accessible, and performant personal website with an integrated blog system. Built with vanilla JavaScript, Bootstrap, and optimized for excellent user experience across all devices.
 
 ## 🚀 Features
 
-- **Modern Design**: Built with Tailwind CSS for responsive, mobile-first design
-- **Terminal Aesthetic**: Dark theme with terminal-inspired command prompts
-- **Dynamic Blog**: Markdown blog that fetches posts from GitHub repository
-- **Spotify Integration**: Embedded playlist for music preferences
-- **Social Links**: Links to GitHub, LinkedIn, Instagram, Facebook, and Lattes
-- **Responsive**: Optimized for desktop, tablet, and mobile devices
-- **Accessibility**: Focus styles and keyboard navigation support
-- **Performance**: Fast loading with CDN-based dependencies
+### Main Website
+- **Clean Design**: Minimalist card-based layout with terminal-inspired aesthetics
+- **Fully Responsive**: Optimized for mobile, tablet, and desktop
+- **Accessibility First**: WCAG 2.1 AA compliant with screen reader support
+- **Performance Optimized**: Fast loading with resource preloading and caching
+
+### Blog System
+- **GitHub Integration**: Posts stored as Markdown files in GitHub repository
+- **Mermaid Charts**: Full support for diagrams and flowcharts
+- **Syntax Highlighting**: Code blocks with Prism.js
+- **Markdown Rendering**: Complete markdown support with frontmatter metadata
+- **Responsive Sidebar**: Easy navigation between posts
+- **SEO Friendly**: Proper meta tags and semantic HTML
 
 ## 📁 Project Structure
 
 ```
-bambans.github.io.tail/
-├── index.html              # Main landing page
-├── blog/                   # Blog section
-│   ├── index.html          # Blog homepage
-│   ├── css/
-│   │   └── style.css       # Blog-specific styles
-│   ├── js/
-│   │   └── main.js         # Blog functionality
-│   └── posts/              # Markdown blog posts
-│       └── primeiro_post.md
+bambans.github.io/
 ├── css/
-│   └── style.css           # Main site styles
-├── img/                    # Images and assets
-│   ├── otavio-pixel-sem-bg.png
-│   ├── otavio.ico
-│   └── otavio_pixel.png
-├── package.json            # Project configuration
-├── README.md               # This file
-├── CNAME                   # GitHub Pages domain
-└── robots.txt              # SEO configuration
+│   ├── normalize.css      # CSS reset for consistency
+│   └── main.css          # Shared styles with CSS variables
+├── js/
+│   └── main.js           # Main page functionality
+├── blog/
+│   ├── css/
+│   │   └── blog.css      # Blog-specific styles
+│   ├── js/
+│   │   ├── markdown-renderer.js  # Markdown processing
+│   │   ├── mermaid-handler.js    # Chart rendering
+│   │   └── blog-app.js          # Main blog application
+│   ├── posts/            # Markdown blog posts
+│   └── index.html        # Blog landing page
+├── img/                  # Images and assets
+├── index.html           # Main landing page
+└── README.md           # This file
 ```
 
 ## 🛠 Technology Stack
 
-- **Frontend Framework**: Vanilla HTML/CSS/JavaScript
-- **CSS Framework**: Tailwind CSS (CDN)
-- **Blog Engine**: Custom JavaScript with Marked.js
-- **Markdown Parser**: Marked.js
-- **HTML Sanitization**: DOMPurify
-- **Fonts**: Google Fonts (Roboto Mono)
-- **Hosting**: GitHub Pages
-- **Version Control**: Git
+### Frontend
+- **HTML5**: Semantic markup with accessibility features
+- **CSS3**: Modern CSS with custom properties and responsive design
+- **JavaScript ES6+**: Modular, vanilla JavaScript
+- **Bootstrap 5.3.6**: Responsive grid and utilities
 
-## 🎨 Design System
+### External Libraries
+- **Marked.js**: Markdown parsing
+- **Prism.js**: Syntax highlighting
+- **Mermaid.js**: Diagram and chart rendering
+- **DOMPurify**: HTML sanitization
 
-### Colors
-- **Background**: `#121212` (terminal-bg)
-- **Primary Purple**: `#8a2be2` (terminal-purple)
-- **Accent Cyan**: `#40e0d0` (terminal-cyan)
-- **Link Orange**: `#ff6347` (terminal-orange)
-- **Link Hover**: `#7f1300` (terminal-orange-hover)
-
-### Typography
-- **Primary Font**: Roboto Mono (monospace)
-- **Weights**: 300 (light), 400 (regular)
-
-### Components
-- Terminal-style command prompts
-- Gradient section backgrounds
-- Hover effects and transitions
-- Custom scrollbars
-- Profile image with hover effects
+### Development
+- **GitHub Pages**: Static site hosting
+- **GitHub API**: Dynamic blog post loading
+- **Service Worker**: (Optional) Offline capabilities
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Web browser (Chrome, Firefox, Safari, Edge)
-- Python 3.x (for local development server)
-- Git (for version control)
+- Web server (for local development)
+- Modern web browser
+- Git (for cloning)
 
 ### Local Development
 
 1. **Clone the repository**
    ```bash
    git clone https://github.com/bambans/bambans.github.io.git
-   cd bambans.github.io.tail
+   cd bambans.github.io
    ```
 
-2. **Start local server**
+2. **Serve locally**
    ```bash
-   # Using Python 3
+   # Using Python
    python -m http.server 8000
    
-   # Or using npm script
-   npm run dev
+   # Using Node.js
+   npx serve .
+   
+   # Using PHP
+   php -S localhost:8000
    ```
 
 3. **Open in browser**
@@ -98,199 +92,152 @@ bambans.github.io.tail/
    http://localhost:8000
    ```
 
-### File Serving
-The site uses GitHub API to fetch blog posts, so it needs to be served over HTTP/HTTPS (not file://) for the blog functionality to work properly.
+### Adding Blog Posts
 
-## 📝 Blog Management
-
-### Adding New Posts
-
-1. Create a new markdown file in `blog/posts/`
-2. Use the format: `YYYY-MM-DD-title.md`
-3. Add frontmatter for metadata:
+1. **Create markdown file** in `blog/posts/`
+2. **Add frontmatter** (optional):
    ```markdown
    ---
    title: "Your Post Title"
-   date: "2024-01-15"
+   author: "Your Name"
+   date: "2023-12-01"
+   tags: "tag1, tag2, tag3"
    ---
-   
-   # Your Post Title
    
    Your content here...
    ```
 
-### Blog Configuration
+3. **Commit and push** - the blog will automatically update
 
-Edit the configuration in `blog/js/main.js`:
+## 🎨 Customization
 
-```javascript
-const username = "bambans";           // GitHub username
-const repo = "bambans.github.io";     // Repository name
-const branch = "main";                // Branch name
-const postsPath = "blog/posts/";      // Posts directory
-```
-
-## 🎯 Customization
-
-### Personal Information
-
-Update the following in `index.html`:
-
-- **Name**: Update the echo user.name section
-- **Email**: Update the echo user.email section
-- **Description**: Update the echo user.description section
-- **Social Links**: Update URLs in the echo user.media section
-- **Profile Image**: Replace images in the `img/` directory
-- **Spotify Playlist**: Update the Spotify embed URL
-
-### Styling
-
-#### Main Site Colors
-Edit the Tailwind config in `index.html`:
-
-```javascript
-tailwind.config = {
-    theme: {
-        extend: {
-            colors: {
-                'terminal-bg': '#121212',      // Background color
-                'terminal-purple': '#8a2be2',  // Command prompt
-                'terminal-cyan': '#40e0d0',    // Commands
-                'terminal-orange': '#ff6347',  // Links
-                'terminal-orange-hover': '#7f1300', // Link hover
-            }
-        }
-    }
-}
-```
-
-#### Custom Animations
-Add custom CSS in `css/style.css`:
+### Color Scheme
+Edit CSS custom properties in `css/main.css`:
 
 ```css
-@keyframes yourAnimation {
-    from { /* start state */ }
-    to { /* end state */ }
-}
-
-.your-class {
-    animation: yourAnimation 1s ease-in-out;
+:root {
+    --bg-primary: #121212;
+    --bg-secondary: #1e1e1e;
+    --accent-primary: #40e0d0;
+    --accent-secondary: #ff6347;
+    /* ... more variables */
 }
 ```
 
-## 📱 Responsive Design
+### Blog Configuration
+Modify settings in `blog/js/blog-app.js`:
 
-The site is built mobile-first with the following breakpoints:
-
-- **Mobile**: < 640px
-- **Tablet**: 640px - 768px
-- **Desktop**: 768px - 1024px
-- **Large Desktop**: > 1024px
-
-### Mobile Optimizations
-- Responsive navigation with hamburger menu
-- Optimized image sizes
-- Touch-friendly interactive elements
-- Readable font sizes across devices
+```javascript
+this.config = {
+    github: {
+        username: 'your-username',
+        repo: 'your-repo',
+        postsPath: 'blog/posts'
+    }
+    // ... more config
+};
+```
 
 ## ♿ Accessibility Features
 
-- **Keyboard Navigation**: All interactive elements are keyboard accessible
-- **Focus Indicators**: Visible focus styles for keyboard users
-- **Alt Text**: All images have descriptive alt text
-- **Semantic HTML**: Proper heading hierarchy and HTML structure
-- **Color Contrast**: High contrast ratios for text readability
+- **Keyboard Navigation**: Full keyboard support
+- **Screen Reader Support**: ARIA labels and semantic HTML
+- **Focus Management**: Logical tab order and focus indicators
+- **Color Contrast**: WCAG AA compliant contrast ratios
+- **Reduced Motion**: Respects user preferences
+- **Skip Links**: Easy navigation for assistive technologies
 
-## 🔧 Development Scripts
+## 📱 Mobile Experience
 
-```bash
-# Start development server
-npm run dev
+- **Touch Optimized**: Large touch targets and gestures
+- **Responsive Design**: Fluid layouts for all screen sizes
+- **Performance**: Optimized for mobile networks
+- **Offline Support**: Progressive Web App features
 
-# Serve the site locally
-npm run serve
+## 🔧 Performance Optimizations
 
-# Check for updates (placeholder)
-npm run build
+- **Resource Preloading**: Critical CSS and JavaScript
+- **Code Splitting**: Modular JavaScript architecture
+- **Caching**: Intelligent content caching
+- **Lazy Loading**: Images and non-critical resources
+- **Minification**: Optimized asset delivery
 
-# Run tests (placeholder)
-npm run test
+## 🐛 Browser Support
+
+- **Modern Browsers**: Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
+- **Mobile**: iOS Safari 14+, Chrome Mobile 90+
+- **Graceful Degradation**: Basic functionality on older browsers
+
+## 📊 Mermaid Chart Support
+
+The blog supports all Mermaid diagram types:
+
+```markdown
+```mermaid
+graph TD
+    A[Start] --> B{Decision}
+    B -->|Yes| C[Action 1]
+    B -->|No| D[Action 2]
+```
 ```
 
-## 🚀 Deployment
+Supported chart types:
+- Flowcharts
+- Sequence diagrams
+- Class diagrams
+- State diagrams
+- Gantt charts
+- Pie charts
+- Git graphs
+- And more!
 
-### GitHub Pages
+## 🔒 Security
 
-1. **Push to GitHub**
-   ```bash
-   git add .
-   git commit -m "Update site"
-   git push origin main
-   ```
+- **Content Security**: DOMPurify sanitization
+- **HTTPS Only**: Secure connections required
+- **No External Dependencies**: Core functionality works offline
+- **Input Validation**: Safe handling of user content
 
-2. **Enable GitHub Pages**
-   - Go to repository Settings
-   - Navigate to Pages section
-   - Select source branch (main)
-   - Site will be available at `https://username.github.io`
+## 📈 SEO Features
 
-### Custom Domain
-
-1. Update `CNAME` file with your domain
-2. Configure DNS records:
-   ```
-   Type: CNAME
-   Name: www
-   Value: username.github.io
-   ```
-
-## 🐛 Troubleshooting
-
-### Blog Posts Not Loading
-- Check GitHub API rate limits
-- Verify repository and file paths
-- Ensure files are in the correct directory
-- Check browser console for errors
-
-### Styles Not Applying
-- Check Tailwind CDN connection
-- Verify CSS file paths
-- Clear browser cache
-- Check for JavaScript errors
-
-### Local Server Issues
-- Ensure Python is installed
-- Try different port: `python -m http.server 3000`
-- Check firewall settings
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
+- **Meta Tags**: Comprehensive social media and search engine tags
+- **Semantic HTML**: Proper heading hierarchy and structure
+- **Fast Loading**: Optimized Core Web Vitals
+- **Mobile Friendly**: Responsive design and touch optimization
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
 
-## 📞 Contact
+## 📄 License
 
-**Otávio Rodrigues Bambans**
-- Email: [otavio@bambans.top](mailto:otavio@bambans.top)
-- GitHub: [@bambans](https://github.com/bambans)
-- LinkedIn: [bambans](https://www.linkedin.com/in/bambans/)
-- Website: [https://bambans.top](https://bambans.top)
+This project is open source. Feel free to use it as inspiration for your own website.
 
-## 🙏 Acknowledgments
+## 🙋‍♂️ Contact
 
-- [Tailwind CSS](https://tailwindcss.com/) for the utility-first CSS framework
-- [Marked.js](https://marked.js.org/) for markdown parsing
-- [DOMPurify](https://github.com/cure53/DOMPurify) for HTML sanitization
-- [GitHub Markdown CSS](https://github.com/sindresorhus/github-markdown-css) for markdown styling
-- [Google Fonts](https://fonts.google.com/) for Roboto Mono font
+- **Website**: [bambans.github.io](https://bambans.github.io)
+- **Email**: otavio@bambans.top
+- **GitHub**: [@bambans](https://github.com/bambans)
+- **LinkedIn**: [bambans](https://www.linkedin.com/in/bambans/)
+
+## 🔄 Changelog
+
+### v2.0.0 (Current)
+- Complete refactoring for performance and accessibility
+- Modular JavaScript architecture
+- Enhanced mobile experience
+- Improved Mermaid chart support
+- Better error handling and user feedback
+
+### v1.0.0
+- Initial release
+- Basic blog functionality
+- Simple responsive design
 
 ---
 
-**Built with ❤️ and ☕ by Otávio Bambans**
+Made with ❤️ by Otávio Bambans
