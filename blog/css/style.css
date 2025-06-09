@@ -187,14 +187,271 @@ code[class*="language-"] {
     margin: 1em 0 !important;
 }
 
-/* Mermaid diagrams */
-.mermaid {
+/* Mermaid diagrams - Enhanced styling */
+.mermaid-container {
+    margin: 1.5em 0 !important;
     background-color: #1f2937 !important;
     border: 1px solid #4b5563 !important;
     border-radius: 8px !important;
+    overflow: hidden !important;
+}
+
+.mermaid-wrapper {
     padding: 1em !important;
-    margin: 1em 0 !important;
     text-align: center !important;
+    position: relative !important;
+}
+
+.mermaid {
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+}
+
+/* Mermaid fullscreen mode */
+.mermaid-wrapper.fullscreen {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background-color: #1f2937 !important;
+    z-index: 9999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 2em !important;
+}
+
+.mermaid-wrapper.fullscreen .mermaid {
+    max-height: 90vh !important;
+    max-width: 90vw !important;
+}
+
+/* Mermaid controls */
+.mermaid-controls {
+    background-color: #374151 !important;
+    padding: 0.5em 1em !important;
+    display: flex !important;
+    gap: 0.5em !important;
+    justify-content: flex-end !important;
+    border-top: 1px solid #4b5563 !important;
+}
+
+.mermaid-copy-btn,
+.mermaid-fullscreen-btn {
+    background-color: #8a2be2 !important;
+    color: white !important;
+    border: none !important;
+    padding: 0.25em 0.75em !important;
+    border-radius: 4px !important;
+    font-size: 0.875em !important;
+    cursor: pointer !important;
+    transition: background-color 0.2s !important;
+    font-family: 'Roboto Mono', monospace !important;
+}
+
+.mermaid-copy-btn:hover,
+.mermaid-fullscreen-btn:hover {
+    background-color: #9333ea !important;
+}
+
+/* Mermaid error styling */
+.mermaid-error {
+    color: #ef4444 !important;
+    padding: 1em !important;
+    text-align: center !important;
+}
+
+.mermaid-error details {
+    margin-top: 0.5em !important;
+    text-align: left !important;
+}
+
+.mermaid-error summary {
+    cursor: pointer !important;
+    color: #40e0d0 !important;
+}
+
+.mermaid-error pre {
+    background-color: #374151 !important;
+    padding: 0.5em !important;
+    border-radius: 4px !important;
+    margin-top: 0.5em !important;
+    font-size: 0.8em !important;
+    overflow-x: auto !important;
+}
+
+/* Mermaid SVG styling overrides */
+.mermaid svg {
+    max-width: 100% !important;
+    height: auto !important;
+}
+
+/* Mermaid chart type specific styling */
+.mermaid .node rect {
+    fill: #374151 !important;
+    stroke: #8a2be2 !important;
+    stroke-width: 2px !important;
+}
+
+.mermaid .node text {
+    fill: #ffffff !important;
+    font-family: 'Roboto Mono', monospace !important;
+}
+
+.mermaid .edgePath path {
+    stroke: #40e0d0 !important;
+    stroke-width: 2px !important;
+}
+
+.mermaid .edgeLabel {
+    background-color: #1f2937 !important;
+    color: #ffffff !important;
+    font-family: 'Roboto Mono', monospace !important;
+}
+
+/* Sequence diagram styling */
+.mermaid .actor {
+    fill: #374151 !important;
+    stroke: #8a2be2 !important;
+    stroke-width: 2px !important;
+}
+
+.mermaid .actor-line {
+    stroke: #4b5563 !important;
+    stroke-width: 1px !important;
+}
+
+.mermaid .messageLine0,
+.mermaid .messageLine1 {
+    stroke: #40e0d0 !important;
+    stroke-width: 2px !important;
+}
+
+.mermaid .messageText {
+    fill: #ffffff !important;
+    font-family: 'Roboto Mono', monospace !important;
+}
+
+/* Gantt chart styling */
+.mermaid .section0,
+.mermaid .section1,
+.mermaid .section2,
+.mermaid .section3 {
+    fill: #8a2be2 !important;
+    opacity: 0.8 !important;
+}
+
+.mermaid .task0,
+.mermaid .task1,
+.mermaid .task2,
+.mermaid .task3 {
+    fill: #40e0d0 !important;
+    stroke: #1f2937 !important;
+}
+
+.mermaid .taskText0,
+.mermaid .taskText1,
+.mermaid .taskText2,
+.mermaid .taskText3 {
+    fill: #ffffff !important;
+    font-family: 'Roboto Mono', monospace !important;
+}
+
+/* Pie chart styling */
+.mermaid .pie {
+    stroke: #1f2937 !important;
+    stroke-width: 2px !important;
+}
+
+.mermaid .pieText {
+    fill: #ffffff !important;
+    font-family: 'Roboto Mono', monospace !important;
+    font-weight: bold !important;
+}
+
+/* Git graph styling */
+.mermaid .commit-id,
+.mermaid .commit-msg,
+.mermaid .branch-label {
+    fill: #ffffff !important;
+    font-family: 'Roboto Mono', monospace !important;
+}
+
+.mermaid .commit0 {
+    fill: #8a2be2 !important;
+    stroke: #1f2937 !important;
+}
+
+.mermaid .commit1 {
+    fill: #40e0d0 !important;
+    stroke: #1f2937 !important;
+}
+
+.mermaid .commit2 {
+    fill: #ff6347 !important;
+    stroke: #1f2937 !important;
+}
+
+/* Journey diagram styling */
+.mermaid .journey-section {
+    fill: #374151 !important;
+    stroke: #8a2be2 !important;
+}
+
+.mermaid .journey-task {
+    fill: #40e0d0 !important;
+    stroke: #1f2937 !important;
+}
+
+.mermaid .journey-actor {
+    fill: #8a2be2 !important;
+    stroke: #1f2937 !important;
+}
+
+/* State diagram styling */
+.mermaid .state {
+    fill: #374151 !important;
+    stroke: #8a2be2 !important;
+    stroke-width: 2px !important;
+}
+
+.mermaid .stateText {
+    fill: #ffffff !important;
+    font-family: 'Roboto Mono', monospace !important;
+}
+
+.mermaid .transition {
+    stroke: #40e0d0 !important;
+    stroke-width: 2px !important;
+}
+
+/* Responsive design for charts */
+@media (max-width: 768px) {
+    .mermaid-controls {
+        flex-direction: column !important;
+        gap: 0.25em !important;
+    }
+    
+    .mermaid-copy-btn,
+    .mermaid-fullscreen-btn {
+        width: 100% !important;
+        padding: 0.5em !important;
+    }
+    
+    .mermaid-wrapper.fullscreen {
+        padding: 1em !important;
+    }
+    
+    .mermaid svg {
+        transform: scale(0.8) !important;
+        transform-origin: center !important;
+    }
 }
 
 /* Task lists */

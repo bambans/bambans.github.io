@@ -167,6 +167,116 @@ iframe[src*="spotify"]:hover {
     80%, 100% { content: '...'; }
 }
 
+/* Terminal cursor effect */
+.terminal-cursor {
+    position: relative;
+}
+
+.terminal-cursor::after {
+    content: '';
+    position: absolute;
+    right: -8px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #40e0d0;
+    animation: blink-cursor 1s infinite;
+}
+
+@keyframes blink-cursor {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+/* Glitch effect */
+.glitch-effect {
+    position: relative;
+    animation: glitch 0.3s;
+}
+
+.glitch-effect::before,
+.glitch-effect::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.glitch-effect::before {
+    animation: glitch-red 0.3s;
+    color: #ff6347;
+    z-index: -1;
+}
+
+.glitch-effect::after {
+    animation: glitch-blue 0.3s;
+    color: #40e0d0;
+    z-index: -2;
+}
+
+@keyframes glitch {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+}
+
+@keyframes glitch-red {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(2px, 2px); }
+    40% { transform: translate(2px, -2px); }
+    60% { transform: translate(-2px, 2px); }
+    80% { transform: translate(-2px, -2px); }
+}
+
+@keyframes glitch-blue {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, -2px); }
+    40% { transform: translate(-2px, 2px); }
+    60% { transform: translate(2px, -2px); }
+    80% { transform: translate(2px, 2px); }
+}
+
+/* High contrast mode */
+.high-contrast {
+    filter: contrast(1.5) brightness(1.2);
+}
+
+.high-contrast .section-gradient {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: #ffffff !important;
+}
+
+.high-contrast .profile-image {
+    border: 3px solid #ffffff;
+}
+
+/* Scroll progress bar */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #8a2be2, #40e0d0);
+    z-index: 1000;
+    transition: width 0.25s ease-out;
+}
+
+/* Parallax elements */
+.parallax {
+    transition: transform 0.1s ease-out;
+}
+
+/* Enhanced focus styles */
+*:focus-visible {
+    outline: 2px solid #8a2be2;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
 /* Print styles */
 @media print {
     body {
@@ -182,5 +292,11 @@ iframe[src*="spotify"]:hover {
     a {
         color: blue !important;
         text-decoration: underline;
+    }
+    
+    .terminal-cursor::after,
+    .glitch-effect::before,
+    .glitch-effect::after {
+        display: none !important;
     }
 }

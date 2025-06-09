@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Test - Improved</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="js/tailwind_config.js"></script>
+    
+    <!-- GitHub Markdown CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.2.0/github-markdown.min.css">
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+    
+    <!-- KaTeX for math expressions -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="blog/css/style.css">
+</head>
+<body class="bg-terminal-bg text-white font-mono">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-terminal-cyan mb-2">Markdown Test Page</h1>
+            <p class="text-gray-400">Testing markdown rendering with blog utilities</p>
+        </div>
+        
+        <!-- Controls -->
+        <div class="mb-6 bg-gray-800 p-4 rounded-lg">
+            <div class="flex flex-wrap gap-4 items-center">
+                <label class="text-terminal-orange">Post URL:</label>
+                <input 
+                    type="text" 
+                    id="post-url" 
+                    class="flex-1 bg-gray-700 text-white px-3 py-2 rounded border border-gray-600 focus:border-terminal-purple"
+                    placeholder="Enter GitHub raw URL or select from dropdown"
+                    value="https://raw.githubusercontent.com/bambans/bambans.github.io/main/blog/posts/primeiro_post.md">
+                <select id="post-selector" class="bg-gray-700 text-white px-3 py-2 rounded border border-gray-600">
+                    <option value="">Select a post...</option>
+                </select>
+                <button 
+                    id="load-btn" 
+                    class="bg-terminal-purple hover:bg-purple-700 px-4 py-2 rounded transition-colors">
+                    Load Post
+                </button>
+            </div>
+        </div>
+        
+        <!-- Post Info -->
+        <div id="post-info" class="mb-6 bg-gray-800 p-4 rounded-lg hidden">
+            <div class="flex flex-wrap gap-4 items-center text-sm">
+                <span id="post-title" class="text-terminal-cyan font-bold"></span>
+                <span id="post-date" class="text-gray-400"></span>
+                <span id="reading-time" class="text-terminal-orange"></span>
+                <span id="word-count" class="text-gray-400"></span>
+            </div>
+            <div id="post-tags" class="mt-2 flex flex-wrap gap-2"></div>
+        </div>
+        
+        <!-- Content Container -->
+        <div class="bg-gray-800 rounded-lg shadow-lg">
+            <div class="p-6">
+                <div id="markdown-container" class="markdown-body bg-terminal-bg text-white">
+                    <div class="text-center py-16 text-gray-400">
+                        Click "Load Post" to render markdown content
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="mt-8 text-center text-gray-500 text-sm">
+            <p>Using shared blog utilities for enhanced markdown rendering</p>
+        </div>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    
+    <!-- Shared Utilities -->
+    <script src="js/main.js"></script>
+    <script src="js/blog-utils.js"></script>
+    
+    <script>
+        // Initialize Mermaid with terminal theme
+        mermaid.initialize({
+            theme: 'dark',
+            themeVariables: {
+                darkMode: true,
+                background: '#1f2937',
+                primaryColor: '#8a2be2',
+                primaryTextColor: '#ffffff',
+                lineColor: '#40e0d0'
+            }
+        });
+        
+        // Configure marked for enhanced rendering
+        marked.setOptions({
+            gfm: true,
+            breaks: true,
+            smartLists: true
+        });
+        
+        // DOM elements
+        const postUrlInput = document.getElementById('post-url');
+        const postSelector = document.getElementById('post-selector');
+        const loadBtn = document.getElementById('load-btn');
+        const markdownContainer = document.getElementById('markdown-container');
+        const postInfo = document.getElementById('post-info');
+        const postTitle = document.getElementById('post-title');
+        const postDate = document.getElementById('post-date');
+        const readingTime = document.getElementById('reading-time');
+        const wordCount = document.getElementById('word-count');
+        const postTags = document.getElementById('post-tags');
+        
+        // Load available posts
+        async function loadAvailablePosts() {
+            try {
+                const response = await fetch('https://api.github.com/repos/bambans/bambans.github.io/contents/blog/posts');
+                const files = await response.json();
+                
+                const markdownFiles = files.filter(file => 
+                    file.type === 'file' && (file.name.endsWith('.md') || file.name.endsWith('.markdown'))
+                );
+                
+                postSelector.innerHTML = '<option value="">Select a post...</option>';
+                markdownFiles.forEach(file => {
+                    const option = document.createElement('option');
+                    option.value = file.download_url;
+                    option.textContent = file.name.replace(/\.(md|markdown)$/, '');
+                    postSelector.appendChild(option);
+                });
+            } catch (error) {
+                console.warn('Could not load post list:', error);
+            }
+        }
+        
+        // Handle post selection
+        postSelector.addEventListener('change', (e) => {
+            if (e.target.value) {
+                postUrlInput.value = e.target.value;
+            }
+        });
+        
+        // Main function to fetch and render markdown
+        async function fetchAndRenderMarkdown() {
+            const url = postUrlInput.value.trim();
+            if (!url) {
+                alert('Please enter a valid URL');
+                return;
+            }
+            
+            // Show loading
+            if (window.BlogAnimations) {
+                window.BlogAnimations.showLoadingSpinner(markdownContainer, 'Loading markdown...');
+            } else {
+                markdownContainer.innerHTML = '<div class="text-center py-16 text-gray-400">Loading...</div>';
+            }
+            
+            try {
+                // Fetch raw markdown
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                const markdownText = await response.text();
+                
+                // Parse frontmatter using shared utilities
+                const { content, frontmatter } = window.BlogUtils ? 
+                    window.BlogUtils.parseFrontmatter(markdownText) : 
+                    { content: markdownText, frontmatter: {} };
+                
+                // Update post info
+                updatePostInfo(frontmatter, content);
+                
+                // Render markdown to HTML
+                const rawHtml = marked.parse(content);
+                const cleanHtml = DOMPurify.sanitize(rawHtml, {
+                    ADD_TAGS: ['iframe'],
+                    ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling']
+                });
+                
+                markdownContainer.innerHTML = cleanHtml;
+                
+                // Apply enhancements
+                await enhanceRenderedContent();
+                
+                // Animate content load
+                if (window.BlogAnimations) {
+                    window.BlogAnimations.animateContentLoad(markdownContainer);
+                }
+                
+            } catch (error) {
+                console.error('Error loading markdown:', error);
+                
+                if (window.BlogErrorHandler) {
+                    const errorInfo = window.BlogErrorHandler.handleGitHubError(error, 'Markdown Loading');
+                    window.BlogErrorHandler.displayError(markdownContainer, errorInfo, fetchAndRenderMarkdown);
+                } else {
+                    markdownContainer.innerHTML = `
+                        <div class="bg-red-900 border border-red-600 text-red-200 px-4 py-3 rounded">
+                            <strong>Error:</strong> ${error.message}
+                        </div>
+                    `;
+                }
+            }
+        }
+        
+        // Update post information display
+        function updatePostInfo(frontmatter, content) {
+            // Title
+            postTitle.textContent = frontmatter.title || 'Untitled Post';
+            
+            // Date
+            if (frontmatter.date && window.BlogUtils) {
+                postDate.textContent = window.BlogUtils.formatPostDate(frontmatter.date);
+            } else if (frontmatter.date) {
+                postDate.textContent = new Date(frontmatter.date).toLocaleDateString();
+            } else {
+                postDate.textContent = 'No date';
+            }
+            
+            // Reading time and word count
+            if (window.BlogUtils) {
+                const timeData = window.BlogUtils.calculateReadingTime(content);
+                readingTime.textContent = timeData.formatted;
+                wordCount.textContent = `${timeData.words} words`;
+            } else {
+                const words = content.trim().split(/\s+/).length;
+                readingTime.textContent = `${Math.ceil(words / 200)} min read`;
+                wordCount.textContent = `${words} words`;
+            }
+            
+            // Tags
+            postTags.innerHTML = '';
+            if (frontmatter.tags && Array.isArray(frontmatter.tags)) {
+                frontmatter.tags.forEach(tag => {
+                    const tagEl = document.createElement('span');
+                    tagEl.className = 'bg-terminal-purple text-white px-2 py-1 rounded text-xs';
+                    tagEl.textContent = tag;
+                    postTags.appendChild(tagEl);
+                });
+            }
+            
+            postInfo.classList.remove('hidden');
+        }
+        
+        // Enhance rendered content
+        async function enhanceRenderedContent() {
+            // Syntax highlighting
+            Prism.highlightAllUnder(markdownContainer);
+            
+            // Mermaid diagrams
+            const mermaidElements = markdownContainer.querySelectorAll('pre code.language-mermaid');
+            if (mermaidElements.length > 0) {
+                mermaidElements.forEach((element, index) => {
+                    const mermaidDiv = document.createElement('div');
+                    mermaidDiv.className = 'mermaid';
+                    mermaidDiv.textContent = element.textContent;
+                    mermaidDiv.id = `mermaid-test-${Date.now()}-${index}`;
+                    element.parentElement.replaceWith(mermaidDiv);
+                });
+                
+                try {
+                    await mermaid.run();
+                } catch (error) {
+                    console.warn('Mermaid rendering error:', error);
+                }
+            }
+            
+            // Math expressions
+            if (typeof renderMathInElement !== 'undefined') {
+                renderMathInElement(markdownContainer, {
+                    delimiters: [
+                        {left: '$$', right: '$$', display: true},
+                        {left: '$', right: '$', display: false}
+                    ],
+                    throwOnError: false
+                });
+            }
+            
+            // External links
+            markdownContainer.querySelectorAll('a').forEach(link => {
+                if (link.hostname !== window.location.hostname) {
+                    link.setAttribute('target', '_blank');
+                    link.setAttribute('rel', 'noopener noreferrer');
+                }
+                link.classList.add('text-terminal-orange', 'hover:text-terminal-orange-hover', 'transition-colors');
+            });
+            
+            // Style tables
+            markdownContainer.querySelectorAll('table').forEach(table => {
+                table.classList.add('w-full', 'border-collapse', 'border', 'border-gray-600', 'mt-4', 'mb-4');
+            });
+            
+            markdownContainer.querySelectorAll('th').forEach(th => {
+                th.classList.add('border', 'border-gray-600', 'bg-gray-700', 'px-4', 'py-2', 'text-left');
+            });
+            
+            markdownContainer.querySelectorAll('td').forEach(td => {
+                td.classList.add('border', 'border-gray-600', 'px-4', 'py-2');
+            });
+            
+            // Style blockquotes
+            markdownContainer.querySelectorAll('blockquote').forEach(blockquote => {
+                blockquote.classList.add('border-l-4', 'border-terminal-purple', 'pl-4', 'italic', 'text-gray-300', 'my-4');
+            });
+        }
+        
+        // Event listeners
+        loadBtn.addEventListener('click', fetchAndRenderMarkdown);
+        
+        postUrlInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                fetchAndRenderMarkdown();
+            }
+        });
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAvailablePosts();
+            console.log('Markdown test page initialized with blog utilities');
+        });
+    </script>
+</body>
+</html>

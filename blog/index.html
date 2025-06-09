@@ -1,203 +1,702 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>blog@bambans</title>
-        
-        <!-- Tailwind CSS -->
-        <script src="https://cdn.tailwindcss.com"></script>
-        <script>
-            tailwind.config = {
-                theme: {
-                    extend: {
-                        fontFamily: {
-                            'mono': ['Roboto Mono', 'monospace'],
-                        },
-                        colors: {
-                            'terminal-bg': '#121212',
-                            'terminal-purple': '#8a2be2',
-                            'terminal-cyan': '#40e0d0',
-                            'terminal-orange': '#ff6347',
-                            'terminal-orange-hover': '#7f1300',
-                        }
-                    }
-                }
-            }
-        </script>
-        
-        <!-- GitHub Markdown CSS for styling -->
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.2.0/github-markdown.min.css"
-        />
-        
-        <!-- Prism.js CSS for syntax highlighting -->
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css"
-        />
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.css"
-        />
-        
-        <!-- KaTeX CSS for math expressions -->
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
-        />
-        
-        <!-- Google Fonts -->
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400&display=swap" rel="stylesheet">
-        
-        <link rel="stylesheet" href="css/style.css" />
-    </head>
-    <body class="bg-terminal-bg text-white font-mono">
-        <!-- Navigation -->
-        <nav class="bg-gray-900 border-b border-gray-700">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <div class="flex items-center">
-                        <a href="../" class="text-terminal-orange hover:text-terminal-orange-hover transition-colors duration-200 mr-4">
-                            ← Home
-                        </a>
-                        <a href="#" class="text-white text-xl font-semibold">
-                            Markdown Blog
-                        </a>
-                    </div>
-                    
-                    <!-- Desktop Navigation -->
-                    <div class="hidden md:flex items-center space-x-8">
-                        <a href="../" class="text-terminal-orange hover:text-terminal-orange-hover transition-colors duration-200">
-                            Main Site
-                        </a>
-                        <a href="#" id="refreshPosts" class="text-terminal-cyan hover:text-blue-300 transition-colors duration-200">
-                            Refresh Posts
-                        </a>
-                    </div>
-                    
-                    <!-- Mobile menu button -->
-                    <div class="md:hidden flex items-center">
-                        <button
-                            type="button"
-                            class="text-gray-300 hover:text-white focus:outline-none focus:text-white"
-                            id="mobile-menu-button"
-                        >
-                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Mobile Navigation Menu -->
-            <div class="md:hidden hidden" id="mobile-menu">
-                <div class="px-2 pt-2 pb-3 space-y-1 bg-gray-800">
-                    <a href="../" class="block px-3 py-2 text-terminal-orange hover:text-terminal-orange-hover transition-colors duration-200">
-                        Main Site
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otávio's Blog - Technology & Programming</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../js/tailwind_config.js"></script>
+    
+    <!-- GitHub Markdown CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.2.0/github-markdown.min.css">
+    
+    <!-- Prism.js for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.min.css">
+    
+    <!-- KaTeX for math expressions -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="css/style.css">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Personal blog by Otávio Rodrigues Bambans covering technology, programming, and software development insights.">
+    <meta name="keywords" content="blog, technology, programming, software development, web development, javascript, python">
+    <meta name="author" content="Otávio Rodrigues Bambans">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Otávio's Blog - Technology & Programming">
+    <meta property="og:description" content="Personal blog covering technology, programming, and software development insights.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://bambans.github.io/blog/">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Otávio's Blog - Technology & Programming">
+    <meta name="twitter:description" content="Personal blog covering technology, programming, and software development insights.">
+</head>
+<body class="bg-terminal-bg text-white font-mono">
+    <!-- Reading Progress Bar -->
+    <div id="reading-progress" class="reading-progress"></div>
+    
+    <!-- Navigation Header -->
+    <nav class="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <a href="../" class="text-terminal-cyan hover:text-terminal-cyan-hover transition-colors">
+                        ← Back to Home
                     </a>
-                    <a href="#" id="refreshPostsMobile" class="block px-3 py-2 text-terminal-cyan hover:text-blue-300 transition-colors duration-200">
-                        Refresh Posts
-                    </a>
+                    <span class="text-gray-400">|</span>
+                    <h1 class="text-xl font-bold text-terminal-purple">Otávio's Blog</h1>
                 </div>
-            </div>
-        </nav>
-
-        <!-- Main Content -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-                <!-- Post List Sidebar -->
-                <div class="lg:col-span-1">
-                    <div class="bg-gray-800 rounded-lg shadow-lg">
-                        <div class="px-6 py-4 bg-gray-700 rounded-t-lg">
-                            <h3 class="text-lg font-semibold text-white">Post List</h3>
-                        </div>
-                        <div class="divide-y divide-gray-700">
-                            <ul id="post-list" class="space-y-0">
-                                <li class="px-6 py-4 text-gray-300">Loading posts...</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Main Content Area -->
-                <div class="lg:col-span-3">
-                    <div class="bg-gray-800 rounded-lg shadow-lg">
-                        <div class="px-6 py-4 bg-gray-700 rounded-t-lg flex justify-between items-center flex-wrap gap-2">
-                            <h2 id="post-title" class="text-lg font-semibold text-white">
-                                Select a post
-                            </h2>
-                            <div class="flex items-center gap-2">
-                                <span
-                                    class="bg-terminal-purple text-white px-3 py-1 rounded-full text-sm font-medium"
-                                    id="post-date"
-                                ></span>
-                                <span
-                                    class="bg-terminal-cyan text-black px-3 py-1 rounded-full text-sm font-medium hidden"
-                                    id="reading-time"
-                                ></span>
-                            </div>
-                        </div>
-                        <div class="p-6">
-                            <div id="content" class="markdown-body bg-terminal-bg text-white">
-                                <div class="loading text-center py-16 text-gray-400">
-                                    Please select a post from the sidebar
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="flex items-center space-x-4">
+                    <button id="refresh-posts" class="text-terminal-orange hover:text-terminal-orange-hover transition-colors" title="Refresh Posts">
+                        🔄
+                    </button>
+                    <button id="toggle-sidebar" class="md:hidden text-terminal-cyan hover:text-terminal-cyan-hover transition-colors">
+                        ☰
+                    </button>
                 </div>
             </div>
         </div>
+    </nav>
 
-        <!-- Footer -->
-        <footer class="bg-gray-900 border-t border-gray-700 mt-16">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <p class="text-center text-gray-400">
-                    Markdown Blog using Tailwind CSS and Marked.js
-                </p>
-            </div>
-        </footer>
+    <div class="container mx-auto px-4 py-6">
+        <div class="flex flex-col md:flex-row gap-6">
+            <!-- Main Content Area -->
+            <main class="flex-1 order-2 md:order-1">
+                <!-- Search Bar -->
+                <div class="search-container mb-6">
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        class="search-input w-full" 
+                        placeholder="Search posts... (Press '/' to focus)"
+                        autocomplete="off">
+                    <div id="search-results" class="search-results hidden"></div>
+                </div>
 
-        <!-- Marked.js for markdown parsing -->
-        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-        <!-- DOMPurify to sanitize HTML output -->
-        <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
-        
-        <!-- Prism.js for syntax highlighting -->
-        <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
-        
-        <!-- Mermaid for diagrams -->
-        <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
-        
-        <!-- KaTeX for math expressions -->
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
-        
-        <!-- Main JavaScript file -->
-        <script src="js/main.js"></script>
-        
-        <!-- Mobile menu toggle script -->
-        <script>
-            document.getElementById('mobile-menu-button').addEventListener('click', function() {
-                const mobileMenu = document.getElementById('mobile-menu');
-                mobileMenu.classList.toggle('hidden');
+                <!-- Post Metadata -->
+                <div id="post-metadata" class="post-metadata hidden">
+                    <div class="metadata-item">
+                        <span class="text-terminal-cyan">📅</span>
+                        <span id="post-date"></span>
+                    </div>
+                    <div class="metadata-item">
+                        <span class="text-terminal-orange">⏱️</span>
+                        <span id="reading-time"></span>
+                    </div>
+                    <div class="metadata-item">
+                        <span class="text-terminal-purple">📖</span>
+                        <span id="word-count"></span>
+                    </div>
+                </div>
+
+                <!-- Post Tags -->
+                <div id="post-tags" class="post-tags mb-6 hidden"></div>
+
+                <!-- Main Content Container -->
+                <article class="bg-gray-800 rounded-lg shadow-lg border border-gray-700">
+                    <div class="p-6">
+                        <div id="post-content" class="markdown-body bg-terminal-bg text-white">
+                            <div class="text-center py-16 text-gray-400">
+                                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-terminal-cyan mx-auto mb-4"></div>
+                                <p>Loading welcome post...</p>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Post Navigation -->
+                <nav id="post-navigation" class="hidden mt-6 flex justify-between items-center">
+                    <button id="prev-post" class="flex items-center space-x-2 text-terminal-cyan hover:text-terminal-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span>←</span>
+                        <span>Previous Post</span>
+                    </button>
+                    <button id="next-post" class="flex items-center space-x-2 text-terminal-cyan hover:text-terminal-cyan-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span>Next Post</span>
+                        <span>→</span>
+                    </button>
+                </nav>
+            </main>
+
+            <!-- Sidebar -->
+            <aside id="sidebar" class="w-full md:w-80 order-1 md:order-2 md:block hidden">
+                <div class="bg-gray-800 rounded-lg shadow-lg border border-gray-700 sticky top-24">
+                    <div class="p-4 border-b border-gray-700">
+                        <h2 class="text-lg font-bold text-terminal-purple mb-2">📚 Posts</h2>
+                        <p class="text-sm text-gray-400">Click on any post to read it</p>
+                    </div>
+                    
+                    <div class="p-4">
+                        <!-- Posts List -->
+                        <div id="posts-list" class="space-y-3">
+                            <div class="text-center py-8 text-gray-400">
+                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-terminal-cyan mx-auto mb-3"></div>
+                                <p>Loading posts...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="p-4 border-t border-gray-700">
+                        <div class="grid grid-cols-2 gap-4 text-center">
+                            <div>
+                                <div id="total-posts" class="text-xl font-bold text-terminal-cyan">0</div>
+                                <div class="text-xs text-gray-400">Total Posts</div>
+                            </div>
+                            <div>
+                                <div id="total-words" class="text-xl font-bold text-terminal-orange">0</div>
+                                <div class="text-xs text-gray-400">Total Words</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-6 border-t border-gray-700">
+        <div class="container mx-auto px-4 text-center text-gray-400">
+            <p class="mb-2">Built with ❤️ by Otávio Rodrigues Bambans</p>
+            <p class="text-sm">Powered by GitHub API • Enhanced Markdown • Terminal Theme</p>
+        </div>
+    </footer>
+
+    <!-- Keyboard Shortcuts Help -->
+    <div id="shortcuts-help" class="fixed bottom-4 right-4 bg-gray-800 border border-gray-600 rounded-lg p-4 text-sm hidden">
+        <h4 class="font-bold text-terminal-purple mb-2">Keyboard Shortcuts</h4>
+        <ul class="space-y-1 text-gray-300">
+            <li><kbd class="bg-gray-700 px-2 py-1 rounded">/</kbd> Focus search</li>
+            <li><kbd class="bg-gray-700 px-2 py-1 rounded">Esc</kbd> Clear search</li>
+            <li><kbd class="bg-gray-700 px-2 py-1 rounded">←/→</kbd> Navigate posts</li>
+            <li><kbd class="bg-gray-700 px-2 py-1 rounded">?</kbd> Toggle this help</li>
+        </ul>
+    </div>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+    
+    <!-- Shared Utilities -->
+    <script src="../js/main.js"></script>
+    <script src="../js/blog-utils.js"></script>
+    
+    <script>
+        // Blog Application
+        class BlogApp {
+            constructor() {
+                this.posts = [];
+                this.currentPost = null;
+                this.filteredPosts = [];
+                this.searchTimeout = null;
+                this.totalWords = 0;
+                
+                this.initializeApp();
+            }
+
+            async initializeApp() {
+                this.setupEventListeners();
+                this.initializeLibraries();
+                await this.loadPosts();
+                await this.loadDefaultPost();
+                this.updateStats();
+            }
+
+            initializeLibraries() {
+                // Initialize Mermaid
+                mermaid.initialize({
+                    theme: 'dark',
+                    themeVariables: {
+                        darkMode: true,
+                        background: '#1f2937',
+                        primaryColor: '#8a2be2',
+                        primaryTextColor: '#ffffff',
+                        lineColor: '#40e0d0'
+                    }
+                });
+
+                // Configure marked
+                marked.setOptions({
+                    gfm: true,
+                    breaks: true,
+                    smartLists: true
+                });
+            }
+
+            setupEventListeners() {
+                // Search functionality
+                const searchInput = document.getElementById('search-input');
+                searchInput.addEventListener('input', (e) => this.handleSearch(e.target.value));
+                searchInput.addEventListener('focus', () => this.showSearchResults());
+                searchInput.addEventListener('blur', () => {
+                    setTimeout(() => this.hideSearchResults(), 200);
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => this.handleKeyboardShortcuts(e));
+
+                // Sidebar toggle
+                document.getElementById('toggle-sidebar').addEventListener('click', () => {
+                    document.getElementById('sidebar').classList.toggle('hidden');
+                });
+
+                // Refresh posts
+                document.getElementById('refresh-posts').addEventListener('click', () => {
+                    this.loadPosts();
+                });
+
+                // Post navigation
+                document.getElementById('prev-post').addEventListener('click', () => this.navigatePost(-1));
+                document.getElementById('next-post').addEventListener('click', () => this.navigatePost(1));
+
+                // Reading progress
+                window.addEventListener('scroll', () => this.updateReadingProgress());
+            }
+
+            async loadPosts() {
+                try {
+                    const response = await fetch('https://api.github.com/repos/bambans/bambans.github.io/contents/blog/posts');
+                    const files = await response.json();
+                    
+                    this.posts = files
+                        .filter(file => file.type === 'file' && (file.name.endsWith('.md') || file.name.endsWith('.markdown')))
+                        .map(file => ({
+                            name: file.name,
+                            title: file.name.replace(/\.(md|markdown)$/, '').replace(/_/g, ' '),
+                            url: file.download_url,
+                            size: file.size,
+                            sha: file.sha
+                        }))
+                        .sort((a, b) => {
+                            // Sort README.md first, then by name
+                            if (a.name === 'README.md') return -1;
+                            if (b.name === 'README.md') return 1;
+                            return a.title.localeCompare(b.title);
+                        });
+
+                    this.filteredPosts = [...this.posts];
+                    this.renderPostsList();
+                    
+                } catch (error) {
+                    console.error('Error loading posts:', error);
+                    this.showError('Failed to load posts. Please try again later.');
+                }
+            }
+
+            async loadDefaultPost() {
+                const readmePost = this.posts.find(post => post.name === 'README.md');
+                if (readmePost) {
+                    await this.loadPost(readmePost);
+                }
+            }
+
+            async loadPost(post) {
+                if (!post) return;
+
+                const startTime = performance.now();
+                
+                try {
+                    // Show loading
+                    const postContent = document.getElementById('post-content');
+                    if (window.BlogAnimations) {
+                        window.BlogAnimations.showLoadingSpinner(postContent, `Loading ${post.title}...`);
+                    }
+
+                    // Fetch post content
+                    const response = await fetch(post.url);
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    const markdownText = await response.text();
+
+                    // Parse frontmatter
+                    const { content, frontmatter } = window.BlogUtils ? 
+                        window.BlogUtils.parseFrontmatter(markdownText) : 
+                        { content: markdownText, frontmatter: {} };
+
+                    // Update post metadata
+                    this.updatePostMetadata(post, frontmatter, content);
+
+                    // Render markdown
+                    const rawHtml = marked.parse(content);
+                    const cleanHtml = DOMPurify.sanitize(rawHtml, {
+                        ADD_TAGS: ['iframe'],
+                        ADD_ATTR: ['allow', 'allowfullscreen', 'frameborder', 'scrolling']
+                    });
+
+                    postContent.innerHTML = cleanHtml;
+
+                    // Enhance content
+                    await this.enhanceContent(postContent);
+
+                    // Update current post
+                    this.currentPost = post;
+                    
+                    // Update navigation
+                    this.updatePostNavigation();
+
+                    // Animate content load
+                    if (window.BlogAnimations) {
+                        window.BlogAnimations.animateContentLoad(postContent);
+                    }
+
+                    // Update URL without reload
+                    const newUrl = post.name === 'README.md' ? 
+                        window.location.pathname : 
+                        `${window.location.pathname}?post=${encodeURIComponent(post.name)}`;
+                    window.history.replaceState({post: post.name}, post.title, newUrl);
+
+                    // Update page title
+                    document.title = frontmatter.title ? 
+                        `${frontmatter.title} - Otávio's Blog` : 
+                        `${post.title} - Otávio's Blog`;
+
+                    // Performance logging
+                    if (window.BlogPerformance) {
+                        window.BlogPerformance.measurePostLoad(startTime, post.title);
+                    }
+
+                } catch (error) {
+                    console.error('Error loading post:', error);
+                    this.showError(`Failed to load "${post.title}". Please try again.`);
+                }
+            }
+
+            updatePostMetadata(post, frontmatter, content) {
+                const postMetadata = document.getElementById('post-metadata');
+                const postDate = document.getElementById('post-date');
+                const readingTime = document.getElementById('reading-time');
+                const wordCount = document.getElementById('word-count');
+                const postTags = document.getElementById('post-tags');
+
+                // Date
+                if (frontmatter.date) {
+                    postDate.textContent = window.BlogUtils ? 
+                        window.BlogUtils.formatPostDate(frontmatter.date) : 
+                        new Date(frontmatter.date).toLocaleDateString();
+                } else {
+                    postDate.textContent = 'No date';
+                }
+
+                // Reading time and word count
+                const timeData = window.BlogUtils ? 
+                    window.BlogUtils.calculateReadingTime(content) : 
+                    { formatted: `${Math.ceil(content.trim().split(/\s+/).length / 200)} min read`, words: content.trim().split(/\s+/).length };
+                
+                readingTime.textContent = timeData.formatted;
+                wordCount.textContent = `${timeData.words} words`;
+
+                // Tags
+                postTags.innerHTML = '';
+                if (frontmatter.tags && Array.isArray(frontmatter.tags)) {
+                    frontmatter.tags.forEach(tag => {
+                        const tagEl = document.createElement('span');
+                        tagEl.className = 'post-tag';
+                        tagEl.textContent = tag;
+                        tagEl.addEventListener('click', () => this.searchByTag(tag));
+                        postTags.appendChild(tagEl);
+                    });
+                    postTags.classList.remove('hidden');
+                } else {
+                    postTags.classList.add('hidden');
+                }
+
+                postMetadata.classList.remove('hidden');
+            }
+
+            async enhanceContent(container) {
+                // Syntax highlighting
+                Prism.highlightAllUnder(container);
+
+                // Mermaid diagrams
+                const mermaidElements = container.querySelectorAll('pre code.language-mermaid');
+                if (mermaidElements.length > 0) {
+                    for (let i = 0; i < mermaidElements.length; i++) {
+                        const element = mermaidElements[i];
+                        const mermaidDiv = document.createElement('div');
+                        mermaidDiv.className = 'mermaid';
+                        mermaidDiv.textContent = element.textContent;
+                        mermaidDiv.id = `mermaid-${Date.now()}-${i}`;
+                        element.parentElement.replaceWith(mermaidDiv);
+                    }
+                    
+                    try {
+                        await mermaid.run();
+                    } catch (error) {
+                        console.warn('Mermaid rendering error:', error);
+                    }
+                }
+
+                // Math expressions
+                if (typeof renderMathInElement !== 'undefined') {
+                    renderMathInElement(container, {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true},
+                            {left: '$', right: '$', display: false}
+                        ],
+                        throwOnError: false
+                    });
+                }
+
+                // Enhance links
+                container.querySelectorAll('a').forEach(link => {
+                    if (link.hostname !== window.location.hostname) {
+                        link.setAttribute('target', '_blank');
+                        link.setAttribute('rel', 'noopener noreferrer');
+                    }
+                    link.classList.add('text-terminal-orange', 'hover:text-terminal-orange-hover', 'transition-colors');
+                });
+
+                // Style tables
+                container.querySelectorAll('table').forEach(table => {
+                    table.classList.add('w-full', 'border-collapse', 'border', 'border-gray-600', 'mt-4', 'mb-4');
+                });
+
+                container.querySelectorAll('th').forEach(th => {
+                    th.classList.add('border', 'border-gray-600', 'bg-gray-700', 'px-4', 'py-2', 'text-left');
+                });
+
+                container.querySelectorAll('td').forEach(td => {
+                    td.classList.add('border', 'border-gray-600', 'px-4', 'py-2');
+                });
+
+                // Style blockquotes
+                container.querySelectorAll('blockquote').forEach(blockquote => {
+                    blockquote.classList.add('border-l-4', 'border-terminal-purple', 'pl-4', 'italic', 'text-gray-300', 'my-4');
+                });
+
+                // Optimize images
+                if (window.BlogPerformance) {
+                    window.BlogPerformance.optimizeImages(container);
+                }
+            }
+
+            renderPostsList() {
+                const postsList = document.getElementById('posts-list');
+                
+                if (this.filteredPosts.length === 0) {
+                    postsList.innerHTML = '<div class="text-center py-8 text-gray-400">No posts found</div>';
+                    return;
+                }
+
+                postsList.innerHTML = this.filteredPosts.map(post => `
+                    <div class="post-item bg-gray-700 rounded-lg p-3 cursor-pointer hover:bg-gray-600 transition-colors border-l-4 border-transparent hover:border-terminal-purple" data-post-name="${post.name}">
+                        <h3 class="font-semibold text-white text-sm mb-1">${post.title}</h3>
+                        <div class="flex items-center justify-between text-xs text-gray-400">
+                            <span>${(post.size / 1024).toFixed(1)}KB</span>
+                            ${post.name === 'README.md' ? '<span class="text-terminal-cyan">📌 Welcome</span>' : ''}
+                        </div>
+                    </div>
+                `).join('');
+
+                // Add click listeners
+                postsList.querySelectorAll('.post-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const postName = item.dataset.postName;
+                        const post = this.posts.find(p => p.name === postName);
+                        if (post) {
+                            this.loadPost(post);
+                            // Highlight selected post
+                            postsList.querySelectorAll('.post-item').forEach(p => p.classList.remove('bg-gray-600', 'border-terminal-purple'));
+                            item.classList.add('bg-gray-600', 'border-terminal-purple');
+                        }
+                    });
+                });
+
+                // Animate post list
+                if (window.BlogAnimations) {
+                    window.BlogAnimations.animatePostList(postsList.querySelectorAll('.post-item'));
+                }
+            }
+
+            handleSearch(query) {
+                clearTimeout(this.searchTimeout);
+                this.searchTimeout = setTimeout(() => {
+                    if (window.BlogUtils) {
+                        this.filteredPosts = window.BlogUtils.searchPosts(this.posts, query);
+                    } else {
+                        this.filteredPosts = this.posts.filter(post => 
+                            post.title.toLowerCase().includes(query.toLowerCase())
+                        );
+                    }
+                    this.renderPostsList();
+                    this.updateSearchResults(query);
+                }, 300);
+            }
+
+            updateSearchResults(query) {
+                const searchResults = document.getElementById('search-results');
+                
+                if (!query.trim()) {
+                    searchResults.classList.add('hidden');
+                    return;
+                }
+
+                if (this.filteredPosts.length === 0) {
+                    searchResults.innerHTML = '<div class="search-result-item">No posts found</div>';
+                    searchResults.classList.remove('hidden');
+                    return;
+                }
+
+                searchResults.innerHTML = this.filteredPosts.slice(0, 5).map(post => `
+                    <div class="search-result-item" data-post-name="${post.name}">
+                        <div class="font-semibold text-white">${post.title}</div>
+                        <div class="text-xs text-gray-400 mt-1">${(post.size / 1024).toFixed(1)}KB</div>
+                    </div>
+                `).join('');
+
+                // Add click listeners
+                searchResults.querySelectorAll('.search-result-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const postName = item.dataset.postName;
+                        const post = this.posts.find(p => p.name === postName);
+                        if (post) {
+                            this.loadPost(post);
+                            this.hideSearchResults();
+                            document.getElementById('search-input').value = '';
+                            this.filteredPosts = [...this.posts];
+                            this.renderPostsList();
+                        }
+                    });
+                });
+
+                searchResults.classList.remove('hidden');
+            }
+
+            showSearchResults() {
+                const searchResults = document.getElementById('search-results');
+                const query = document.getElementById('search-input').value;
+                if (query.trim()) {
+                    searchResults.classList.remove('hidden');
+                }
+            }
+
+            hideSearchResults() {
+                document.getElementById('search-results').classList.add('hidden');
+            }
+
+            searchByTag(tag) {
+                document.getElementById('search-input').value = tag;
+                this.handleSearch(tag);
+            }
+
+            updatePostNavigation() {
+                const currentIndex = this.posts.findIndex(post => post.name === this.currentPost?.name);
+                const prevBtn = document.getElementById('prev-post');
+                const nextBtn = document.getElementById('next-post');
+                
+                prevBtn.disabled = currentIndex <= 0;
+                nextBtn.disabled = currentIndex >= this.posts.length - 1;
+                
+                document.getElementById('post-navigation').classList.remove('hidden');
+            }
+
+            navigatePost(direction) {
+                const currentIndex = this.posts.findIndex(post => post.name === this.currentPost?.name);
+                const newIndex = currentIndex + direction;
+                
+                if (newIndex >= 0 && newIndex < this.posts.length) {
+                    this.loadPost(this.posts[newIndex]);
+                }
+            }
+
+            updateReadingProgress() {
+                const scrollTop = window.scrollY;
+                const docHeight = document.body.scrollHeight - window.innerHeight;
+                const scrollPercent = (scrollTop / docHeight) * 100;
+                
+                document.getElementById('reading-progress').style.width = Math.min(scrollPercent, 100) + '%';
+            }
+
+            updateStats() {
+                document.getElementById('total-posts').textContent = this.posts.length;
+                // Calculate total words from all posts (would need to fetch all content)
+                document.getElementById('total-words').textContent = this.totalWords || '~5K';
+            }
+
+            handleKeyboardShortcuts(e) {
+                // Search focus
+                if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
+                    e.preventDefault();
+                    document.getElementById('search-input').focus();
+                }
+                
+                // Clear search
+                if (e.key === 'Escape') {
+                    document.getElementById('search-input').value = '';
+                    this.filteredPosts = [...this.posts];
+                    this.renderPostsList();
+                    this.hideSearchResults();
+                    document.getElementById('search-input').blur();
+                }
+                
+                // Post navigation
+                if (e.key === 'ArrowLeft' && !e.target.matches('input')) {
+                    e.preventDefault();
+                    this.navigatePost(-1);
+                }
+                
+                if (e.key === 'ArrowRight' && !e.target.matches('input')) {
+                    e.preventDefault();
+                    this.navigatePost(1);
+                }
+                
+                // Toggle shortcuts help
+                if (e.key === '?' && !e.target.matches('input')) {
+                    e.preventDefault();
+                    document.getElementById('shortcuts-help').classList.toggle('hidden');
+                }
+            }
+
+            showError(message) {
+                const postContent = document.getElementById('post-content');
+                postContent.innerHTML = `
+                    <div class="bg-red-900 border border-red-600 text-red-200 px-4 py-3 rounded">
+                        <strong>Error:</strong> ${message}
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize the blog application
+        document.addEventListener('DOMContentLoaded', () => {
+            window.blogApp = new BlogApp();
+            console.log('Blog application initialized');
+        });
+
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', (e) => {
+            if (e.state && e.state.post && window.blogApp) {
+                const post = window.blogApp.posts.find(p => p.name === e.state.post);
+                if (post) {
+                    window.blogApp.loadPost(post);
+                }
+            }
+        });
+
+        // Service Worker registration for offline support
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('../sw.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
             });
-            
-            // Add mobile refresh posts functionality
-            document.getElementById('refreshPostsMobile').addEventListener('click', (e) => {
-                e.preventDefault();
-                fetchPosts();
-                // Close mobile menu
-                document.getElementById('mobile-menu').classList.add('hidden');
-            });
-        </script>
-    </body>
+        }
+    </script>
+</body>
 </html>

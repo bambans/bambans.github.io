@@ -1,7 +1,7 @@
 {
   "name": "bambans-github-io-blog",
   "version": "2.1.0",
-  "description": "Personal website for Otávio Rodrigues Bambans with enhanced markdown blog featuring syntax highlighting, math expressions, and diagrams",
+  "description": "Personal website for Otávio Rodrigues Bambans with enhanced markdown blog featuring syntax highlighting, math expressions, comprehensive Mermaid chart support, and shared JavaScript utilities",
   "main": "index.html",
   "scripts": {
     "dev": "python -m http.server 8000",
@@ -27,9 +27,16 @@
     "syntax-highlighting",
     "prismjs",
     "mermaid",
+    "mermaid-charts",
+    "flowcharts",
+    "sequence-diagrams",
+    "gantt-charts",
+    "pie-charts",
     "katex",
     "offline-support",
-    "service-worker"
+    "service-worker",
+    "shared-utilities",
+    "modular-javascript"
   ],
   "author": {
     "name": "Otávio Rodrigues Bambans",
@@ -88,6 +95,22 @@
     },
     "features": {
       "mermaid_diagrams": true,
+      "mermaid_chart_types": [
+        "flowcharts",
+        "sequence_diagrams", 
+        "gantt_charts",
+        "pie_charts",
+        "git_graphs",
+        "state_diagrams",
+        "journey_maps",
+        "class_diagrams",
+        "er_diagrams"
+      ],
+      "mermaid_controls": {
+        "copy_code": true,
+        "fullscreen_view": true,
+        "error_handling": true
+      },
       "math_expressions": true,
       "task_lists": true,
       "tables": true,
@@ -99,15 +122,31 @@
       "search": true,
       "keyboard_shortcuts": true,
       "offline_support": true,
-      "responsive_design": true
+      "responsive_design": true,
+      "shared_utilities": true,
+      "modular_architecture": true,
+      "performance_monitoring": true,
+      "error_handling": true
     }
+  },
+  "file_structure": {
+    "js/": {
+      "main.js": "Shared site utilities and common functionality",
+      "blog-utils.js": "Blog-specific utilities and helpers",
+      "tailwind_config.js": "Shared Tailwind CSS configuration"
+    },
+    "blog/js/": {
+      "main.js": "Blog application logic using shared utilities"
+    },
+    "sw.js": "Service Worker for offline functionality"
   },
   "features": [
     "Responsive design with Tailwind CSS",
     "Dark theme terminal aesthetic",
     "Enhanced markdown blog with GitHub integration",
     "Syntax highlighting with Prism.js",
-    "Mermaid diagram support",
+    "Comprehensive Mermaid diagram support with 9+ chart types",
+    "Interactive chart controls (copy, fullscreen, error handling)",
     "Math expressions with KaTeX",
     "Task lists and enhanced tables",
     "Spotify playlist integration",
@@ -126,6 +165,14 @@
     "Line numbers in code blocks",
     "Keyboard navigation shortcuts",
     "Enhanced error handling",
-    "Performance optimizations"
+    "Performance optimizations",
+    "Interactive Mermaid charts with fullscreen and copy features",
+    "Support for flowcharts, sequence diagrams, Gantt charts, pie charts",
+    "Git graphs, state diagrams, journey maps, class and ER diagrams",
+    "Terminal-themed chart styling with dark mode support",
+    "Modular JavaScript architecture with shared utilities",
+    "Performance monitoring and error handling",
+    "Reusable components across site and blog",
+    "Optimized file structure for maintainability"
   ]
 }

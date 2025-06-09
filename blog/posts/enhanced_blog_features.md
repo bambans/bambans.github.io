@@ -93,9 +93,9 @@ $$
 f(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2}
 $$
 
-## Mermaid Diagrams
+### Mermaid Diagrams
 
-Create beautiful diagrams using Mermaid syntax:
+Create beautiful diagrams using Mermaid syntax with interactive controls:
 
 ### Flowchart
 ```mermaid
@@ -127,6 +127,18 @@ sequenceDiagram
     P-->>B: Enhanced code blocks
     B-->>U: Display formatted post
 ```
+
+### Pie Chart Example
+```mermaid
+pie title Development Time
+    "Mermaid Integration" : 30
+    "Syntax Highlighting" : 25
+    "Math Support" : 20
+    "Offline Features" : 15
+    "Testing" : 10
+```
+
+Each diagram includes **📋 Copy Code** and **🔍 Fullscreen** buttons for better interaction.
 
 ## Task Lists
 
