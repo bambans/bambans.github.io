@@ -1,35 +1,39 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="Otávio Bambans' USP student personal web page." />
-        <meta name="keywords" content="programming, html, css, js, python, c, c++, projects, apps" />
+        <meta name="description" content="Otávio Bambans' personal web page." />
+        <meta
+            name="keywords"
+            content="programming, html, css, js, python, c, c++, projects, apps"
+        />
         <meta name="author" content="Otávio Rodrigues Bambans" />
         <meta name="robots" content="index, follow" />
         <meta name="language" content="Portuguese" />
+        <meta name="color-scheme" content="dark" />
         <title>@bambans</title>
 
         <!-- Favicon -->
         <link rel="icon" href="img/otavio.ico" type="image/x-icon" />
-        
+
         <!-- Image link for social sharing -->
         <link rel="image_src" href="img/otavio-pixel-sem-bg.png" />
 
-        <!-- Preload critical resources -->
-        <link rel="preload" href="css/normalize.css" as="style" />
-        <link rel="preload" href="css/main.css" as="style" />
-        <link rel="preload" href="js/main.js" as="script" />
-
         <!-- Modern Normalize CSS -->
-        <link rel="stylesheet" href="css/normalize.css" />
-        
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/modern-normalize@3.0.1/modern-normalize.min.css"
+        />
+
         <!-- Bootstrap CSS -->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" 
-              rel="stylesheet" 
-              integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" 
-              crossorigin="anonymous" />
-        
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT"
+            crossorigin="anonymous"
+        />
+
         <!-- Custom CSS -->
         <link rel="stylesheet" href="css/main.css" />
     </head>
@@ -39,12 +43,33 @@
                 <div class="col-lg-8 col-md-10 col-sm-12">
                     <!-- Header Section -->
                     <header class="text-center mb-5" role="banner">
-                        <img src="img/otavio-pixel-sem-bg.png"
-                             alt="Otávio Rodrigues Bambans"
-                             class="profile-image mb-4"
-                             loading="eager" />
+                        <img
+                            src="img/otavio-pixel-sem-bg.png"
+                            alt="Otávio Rodrigues Bambans"
+                            class="profile-image mb-4"
+                            loading="eager"
+                        />
                         <h1 class="display-4 mb-3">Otavio Bambans</h1>
-                        <p class="lead">Information Systems technician, Computer Information Systems bachelor's degree student at EACH/USP and HPC Solutions Architect at Versatus HPC</p>
+                        <p class="lead">
+                            Information Systems technician by
+                            <a
+                                href="https://etecitanhaem.cps.sp.gov.br/"
+                                target="_blank"
+                                >Etec de Itanhaém</a
+                            >, Computer Information Systems bachelor's degree
+                            student at
+                            <a
+                                href="https://www5.each.usp.br/bacharelado-em-sistemas-de-informacao/"
+                                target="_blank"
+                                >EACH/USP</a
+                            >
+                            and HPC Solutions Architect at
+                            <a
+                                href="https://versatushpc.com.br/"
+                                target="_blank"
+                                >Versatus HPC</a
+                            >
+                        </p>
                     </header>
 
                     <!-- Main Content -->
@@ -52,26 +77,37 @@
                         <div class="row g-4">
                             <!-- Contact Card -->
                             <div class="col-md-6">
-                                <div class="info-card h-100" role="region" aria-labelledby="contact-heading">
+                                <div
+                                    class="info-card h-100"
+                                    role="region"
+                                    aria-labelledby="contact-heading"
+                                >
                                     <div class="card-header">
-                                        <h2 id="contact-heading" class="card-title">
-                                            <span class="prompt">></span> Contact
+                                        <h2
+                                            id="contact-heading"
+                                            class="card-title"
+                                        >
+                                            <span class="prompt">></span>
+                                            Contact
                                         </h2>
                                     </div>
                                     <div class="card-body">
                                         <ul class="link-list" role="list">
                                             <li>
-                                                <a href="mailto:otavio@bambans.top" 
+                                                <a
+                                                    href="mailto:otavio@bambans.top"
                                                     class="contact-link"
-                                                    aria-label="Send email to Otavio Bambans">
+                                                    aria-label="Send email to Otavio Bambans"
+                                                >
                                                     otavio@bambans.top
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="tel:+5513982052585" 
-                                                   target="_blank" 
-                                                   rel="noopener noreferrer"
-                                                   class="contact-link">
+                                                <a
+                                                    href="tel:+5513982052585"
+                                                    class="contact-link"
+                                                    aria-label="Call or message to Otavio Bambans"
+                                                >
                                                     +55 (13) 98205-2585
                                                 </a>
                                             </li>
@@ -82,28 +118,40 @@
 
                             <!-- Projects Card -->
                             <div class="col-md-6">
-                                <div class="info-card h-100" role="region" aria-labelledby="projects-heading">
+                                <div
+                                    class="info-card h-100"
+                                    role="region"
+                                    aria-labelledby="projects-heading"
+                                >
                                     <div class="card-header">
-                                        <h2 id="projects-heading" class="card-title">
-                                            <span class="prompt">></span> Projects
+                                        <h2
+                                            id="projects-heading"
+                                            class="card-title"
+                                        >
+                                            <span class="prompt">></span>
+                                            Projects
                                         </h2>
                                     </div>
                                     <div class="card-body">
                                         <ul class="link-list" role="list">
                                             <li>
-                                                <a href="https://rocksing.com.br/" 
-                                                   target="_blank" 
-                                                   rel="noopener noreferrer"
-                                                   class="project-link">
-                                                    rocksing
+                                                <a
+                                                    href="https://rocksing.com.br/"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    class="project-link"
+                                                >
+                                                    RockSing
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="https://unduo.com.br/" 
-                                                   target="_blank" 
-                                                   rel="noopener noreferrer"
-                                                   class="project-link">
-                                                    unduo
+                                                <a
+                                                    href="https://unduo.com.br/"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    class="project-link"
+                                                >
+                                                    UNDUO
                                                 </a>
                                             </li>
                                         </ul>
@@ -113,57 +161,81 @@
 
                             <!-- Social Media Card -->
                             <div class="col-md-6">
-                                <div class="info-card h-100" role="region" aria-labelledby="social-heading">
+                                <div
+                                    class="info-card h-100"
+                                    role="region"
+                                    aria-labelledby="social-heading"
+                                >
                                     <div class="card-header">
-                                        <h2 id="social-heading" class="card-title">
-                                            <span class="prompt">></span> Social Media
+                                        <h2
+                                            id="social-heading"
+                                            class="card-title"
+                                        >
+                                            <span class="prompt">></span> Social
+                                            Media
                                         </h2>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-6">
-                                                <ul class="link-list" role="list">
+                                                <ul
+                                                    class="link-list"
+                                                    role="list"
+                                                >
                                                     <li>
-                                                        <a href="https://github.com/bambans/" 
-                                                           target="_blank" 
-                                                           rel="noopener noreferrer"
-                                                           class="social-link">
+                                                        <a
+                                                            href="https://github.com/bambans/"
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            class="social-link"
+                                                        >
                                                             GitHub
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="https://www.linkedin.com/in/bambans/" 
-                                                           target="_blank" 
-                                                           rel="noopener noreferrer"
-                                                           class="social-link">
+                                                        <a
+                                                            href="https://www.linkedin.com/in/bambans/"
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            class="social-link"
+                                                        >
                                                             LinkedIn
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="https://www.instagram.com/otavio_bambans/" 
-                                                           target="_blank" 
-                                                           rel="noopener noreferrer"
-                                                           class="social-link">
+                                                        <a
+                                                            href="https://www.instagram.com/otavio_bambans/"
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            class="social-link"
+                                                        >
                                                             Instagram
                                                         </a>
                                                     </li>
                                                 </ul>
                                             </div>
                                             <div class="col-6">
-                                                <ul class="link-list" role="list">
+                                                <ul
+                                                    class="link-list"
+                                                    role="list"
+                                                >
                                                     <li>
-                                                        <a href="https://www.facebook.com/otavio.rodrigues.bambans" 
-                                                           target="_blank" 
-                                                           rel="noopener noreferrer"
-                                                           class="social-link">
+                                                        <a
+                                                            href="https://www.facebook.com/otavio.rodrigues.bambans"
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            class="social-link"
+                                                        >
                                                             Facebook
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="http://lattes.cnpq.br/9571686392212007" 
-                                                           target="_blank" 
-                                                           rel="noopener noreferrer"
-                                                           class="social-link">
+                                                        <a
+                                                            href="http://lattes.cnpq.br/9571686392212007"
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            class="social-link"
+                                                        >
                                                             Lattes
                                                         </a>
                                                     </li>
@@ -176,18 +248,28 @@
 
                             <!-- Blog Card -->
                             <div class="col-md-6">
-                                <div class="info-card h-100" role="region" aria-labelledby="blog-heading">
+                                <div
+                                    class="info-card h-100"
+                                    role="region"
+                                    aria-labelledby="blog-heading"
+                                >
                                     <div class="card-header">
-                                        <h2 id="blog-heading" class="card-title">
+                                        <h2
+                                            id="blog-heading"
+                                            class="card-title"
+                                        >
                                             <span class="prompt">></span> Blog
                                         </h2>
                                     </div>
                                     <div class="card-body">
                                         <p class="card-text">
-                                            <a href="https://naufragodoespaco.com.br/" 
-                                               class="blog-link"
-                                               aria-label="Visit Otavio's blog">
-                                                Visit my blog
+                                            <a
+                                                href="https://naufragodoespaco.com.br"
+                                                target="_blank"
+                                                class="blog-link"
+                                                aria-label="Visit Otavio's blog"
+                                            >
+                                                Náufrago do Espaço
                                             </a>
                                         </p>
                                     </div>
@@ -200,11 +282,15 @@
         </div>
 
         <!-- Bootstrap JS (deferred) -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" 
-                integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" 
-                crossorigin="anonymous" 
-                defer></script>
-        
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
+            crossorigin="anonymous"
+            defer
+        ></script>
+        <footer class="footer mt-5 py-3 text-center text-light w-100">
+            Made with love by me <span aria-label="love" role="img">❤️</span>
+        </footer>
         <!-- Custom JS (deferred) -->
         <script src="js/main.js" defer></script>
     </body>

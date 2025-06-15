@@ -1,2 +1,19 @@
-User-Agent: *
+User-agent: *
 Allow: /
+
+# Better SEO for Google and other search engines
+Sitemap: https://bambans.top/sitemap.xml
+
+# Optional: Encourage indexing of all content
+# (Googlebot and others will respect these, but they're not strictly necessary if Allow: / is set)
+User-agent: Googlebot
+Allow: /
+
+# Optional: Set crawl-delay for non-Google bots (Google ignores this)
+# Crawl-delay: 10
+
+# Prevent indexing of search results or duplicate content (uncomment if needed)
+# Disallow: /search
+# Disallow: /*?*sort=
+
+# End of file
