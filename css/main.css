@@ -1,15 +1,9 @@
 :root {
-    --bg-primary: #121212;
-    --bg-secondary: #1e1e1e;
-    --bg-tertiary: #2d2d2d;
-    --text-primary: #ffffff;
-    --text-secondary: #cccccc;
+    --text-primary: #ccc;
     --accent-primary: #40e0d0;
     --accent-secondary: #ff6347;
-    --accent-hover: #20b2aa;
-    --border-color: #333333;
-    --font-mono: "Roboto Mono", "Consolas", "Monaco", "Courier New", monospace;
-    --font-size-base: 1rem;
+    --border-color: #333;
+    --font-mono: monospace;
     --font-size-lg: 1.125rem;
     --font-size-xl: 1.25rem;
     --line-height-base: 1.6;
@@ -18,102 +12,64 @@
     --spacing-lg: 1.5rem;
     --border-radius: 8px;
 }
-
 body {
+    margin-top: 2rem;
     font-family: var(--font-mono);
-    background-color: var(--bg-primary);
     color: var(--text-primary);
-    margin: 0;
     min-height: 100vh;
 }
-
 h1,
 h2 {
-    font-family: var(--font-mono);
     font-weight: 700;
     line-height: var(--line-height-heading);
-    color: var(--text-primary);
-    margin: 0;
 }
-
+ul {
+    list-style-type: "> ";
+}
 .display-4 {
     font-weight: 500;
     color: var(--accent-primary);
     font-size: clamp(2rem, 5vw, 3rem);
 }
-
 .lead {
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-size: var(--font-size-lg);
     line-height: var(--line-height-base);
 }
-
 .profile-image {
     width: min(200px, 50vw);
     border-radius: 50%;
     border: 3px solid var(--accent-primary);
 }
-
 .info-card {
-    background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
 }
-
 .card-header {
-    background-color: var(--bg-tertiary);
     border-bottom: 1px solid var(--border-color);
     padding: var(--spacing-md) var(--spacing-lg);
 }
-
 .card-title {
     font-size: var(--font-size-xl);
     font-weight: 600;
-    color: var(--text-primary);
 }
-
 .card-body {
     padding: var(--spacing-lg);
-    background-color: var(--bg-secondary);
 }
-
 a {
     color: var(--accent-secondary);
     text-decoration: none;
     transition: color 0.15s;
 }
-
 a:hover,
 a:focus {
-    color: var(--accent-hover);
     text-decoration: underline;
 }
-
-.text-center {
-    text-align: center !important;
+.prompt {
+    font-weight: 700;
+    line-height: var(--line-height-heading);
+    color: var(--accent-primary);
 }
-
-.bg-dark {
-    background-color: #121212 !important;
-}
-
-.text-light {
-    color: #fff !important;
-}
-
-.w-100 {
-    width: 100% !important;
-}
-
-.mt-5 {
-    margin-top: 3rem !important;
-}
-
-.py-3 {
-    padding-top: 1rem !important;
-    padding-bottom: 1rem !important;
-}
-
 @media (max-width: 768px) {
     .profile-image {
         width: min(150px, 40vw);
