@@ -24,7 +24,7 @@ h2 {
     line-height: var(--line-height-heading);
 }
 ul {
-    list-style-type: "> ";
+    list-style-type: "- ";
 }
 .display-4 {
     font-weight: 500;
