@@ -75,3 +75,12 @@ a:focus {
         width: min(150px, 40vw);
     }
 }
+
+.footer-signature {
+    display: block;
+    width: 180px;
+    height: auto;
+    max-width: 60vw;
+    margin: 0 auto;
+    opacity: 0.8;
+}
